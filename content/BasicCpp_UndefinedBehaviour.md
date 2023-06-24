@@ -1,5 +1,5 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre el comportamiento indefinido
-Date: 2019-11-18 20:14
+Date: 2019-11-18
 Category: Iniciación C++
 Status: draft
 
@@ -23,7 +23,6 @@ Además de estas construcciones, se dan cuatro tipos de comportamiento:
 
 #1 ¿Qué significa comportamiento indefinido?
 
-
 *Resumen: El compilador tiene libertad total si se encuentra con comportamiento indefinido: puede no hacer nada o borrar el disco duro.*
 
 Es un comportamiento en el que el estándar no define el resultado de una operación y da libertad **completa** al compilador para decidir qué hacer.
@@ -32,19 +31,17 @@ Cuando un programa pasa por alguno de estos casos, se dice que *el programa est�
 Por ejemplo, queremos saber qué hace el siguiente código:
 
 ```
-signed int f(signed int a) {
-  ++a;
-  return a;
+signed int next(signed int a) {
+  return a + 1;
 }
 ```
 
 A primera vista, parece fácil. 
-Está definiendo una función f, a la que se le pasa un entero con signo, lo incrementa y luego lo devuelve.
+Está definiendo una función f, a la que se le pasa un entero con signo y devuelve el siguiente número.
 
 Sin embargo, ¿qué pasa si el entero ya está en su valor máximo?
 
-En este caso, se produce un desbordamiento de un entero con signo.
-El estándar no define cómo tiene que comportarse un programa cuando esto ocurre por lo que el compilador tiene libertad total para decidir qué va que pasar con el programa.
+En este caso, se produce un desbordamiento de un entero con signo. Cuando esto ocurrr, el estándar no define cómo tiene que comportarse el programa por lo que el compilador tiene libertad total para decidir qué va que pasar con el programa.
 
 Hay que notar que no sólo tiene libertad para decidir lo que ocurre al pasar por esa línea.
 Si pasa por esa línea, puede cambiar cualquier otra parte del programa, ya que a partir de ahí, tiene libertad total.
@@ -62,6 +59,8 @@ Podría cambiar el comportamiento si se actualiza o se cambia el sistema operati
 
 #2 ¿Por qué existe el comportamiento indefinido?
 
+*Resumen: El comportamiento indefinido da libertad al compilador para ajustarse a su hardware objetivo.*
+
 En general, el comportamiento indefinido permite que el compilador se adapte mejor al hardware que se está usando y, 
 por lo tanto, genere código más optimizado para diferentes plataformas.
 
@@ -69,19 +68,17 @@ Por ejemplo, en el caso anterior:
 
 ```
 signed int f(signed int a) {
-  ++a;
-  return a;
+  return a + 1;
 }
 ```
 
-Supongamos que el estándar decidiese que se utiliza complemento a dos para los números con signo (cosa que se ha hecho ya en C++20).
+Puede que una arquitectura use complemento a dos para los enteros con signo y el resultado obvio sería que el la función devuelva un número negativo.
+Sin embargo, otras arquitecturas podrían lanzar una excepción. Incluso podría pasar que alguna arquitectura se bloquease si se le pide esa operación.
 
-Puede haber arquitecturas que no utilicen complemento a dos para codificar el signo
-o puede que el procesador genere una excepción si hay un desbordamiento.
-Si el estándar definiese lo que tiene que ocurrir, el compilador tendría que añadir
-una comprobación del valor de la variable que penalizaría todas las aplicaciones
-sólo para gestionar un caso residual como es el desbordamiento.
-De hecho, el programador puede saber que ese caso nunca se da, por lo que sería una penalización sin motivo.
+Si el estándard definiese el comportamiento, estaría penalizando a las arquitecturas que no siguien su definición. 
+Por ejemplo, si se lanzase una excepción, tendría que comprobar el valor del número antes de realizar el incremento por lo que la función se volvería mucho más lenta.
+
+Además, el programador puede saber que ese caso nunca se da, por lo que sería una penalización sin motivo.
 
 Pongamos otro ejemplo:
 
@@ -92,13 +89,18 @@ int f() {
 ```
 
 El estándar no dice lo que tiene que pasar si una función que debe devolver un valor no devuelve nada.
-Tal vez el programador sepa que g() siempre lanza una excepción o cierra la aplicación, por lo que nunca va a haber problemas.
+Tal vez el programador sepa que g() nunca retorna porque siempre lanza una excepción o cierra la aplicación, por lo que no va a haber problemas.
 Pero el compilador no lo sabe y tiene que decidir qué hacer. Aquí se encuentra un problema:
+
  - Si el estándar definiese el comportamiento, le obligaría a añadir código que nunca se va a usar.
- - Si no se define, podría sencillamente seguir ejecutando la siguiente función y pasar cualquier cosa.
+ - Si no se define, podría spasar cualquier cosa.
+
+Así pues, el estándard no indica qué debe pasar y el desarrollador del compilador puede hacer lo que más le convenga para su plataforma.
 
 
 #3 ¿Por qué es tan peligroso el comportamiento indefinido?
+
+*Resumen: El comportamiento indefinido permite que pase cualquier cosa con el programa. El estándar no pone límites a lo que puede pasar.*
 
 El comportamiento indefinido es una de las caracteristicas más peligrosas C++.
 
@@ -109,7 +111,7 @@ Los motivos son varios, aunque los dos principales son:
    De hecho, muchos errores de seguridad se basan en el comportamiento indefinido de C o C++.
    
  - Cuando hay un comportamiento indefinido, es muy difícil depurar el error.
-   Hay que entender que, si se da un comportamiento indefinido, todo el programa el que es indefinido.
+   Hay que entender que, si se da un comportamiento indefinido, todo el programa es indefinido.
    Por lo que el error puede darse en la línea problemática o podría comportarse según lo esperado durante un tiempo y fallar más adelante.
 
 De hecho, el comportamiento indefinido es una de las mayores quejas de los programadores de C++ y, a la vez, 
@@ -117,6 +119,8 @@ lo que le da a C++ la capacidad de generar código optimizado en muchas arquitec
 
 
 #4. ¿El compilador puede avisar del comportamiento indefinido?
+
+*Resumen: El compilador no está obligado a avisar del comportamiento indefinido.*
 
 El compilador no tiene obligación de avisar del comportamiento indefinido en todos los casos.
 
@@ -159,9 +163,10 @@ Por ejemplo:
  - Usar std::array en vez de arrays de C. 
  - Usar conversiones de C++ (static_cast, ...) en vez de conversiones de C.
  
- Puedes 
  
-#7
+#7 ¿Cómo está relacionado el comportamiento indefinido con el optimizador?
+
+
 
 
 # Referencias
