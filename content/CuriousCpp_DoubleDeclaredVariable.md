@@ -9,13 +9,13 @@ Category: Curiosidades de C++
 
 ```
 
-  for(int i=0; i<5; ++i) {
-      const auto limit = 5 - i;
-      for(int i=0; i<limit; ++i) {
-          std::cout << '-';
-      }
-	  std::cout << std::endl;
-  }
+for(int i=0; i<5; ++i) {
+    const auto limit = 5 - i;
+    for(int i=0; i<limit; ++i) {
+        std::cout << '-';
+    }
+ std::cout << std::endl;
+}
 
 ```
 
