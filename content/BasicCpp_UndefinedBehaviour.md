@@ -1,7 +1,6 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre el comportamiento indefinido
-Date: 2019-11-18
+Date: 2023-07-04
 Category: Iniciación C++
-Status: draft
 
 # 0. ¿Qué  tipos de comportamiento hay en C++?
 
@@ -142,7 +141,7 @@ Si el programador ya sabe que nunca lo será, se está penalizando la ejecución
 
 #5 Ejemplos de comportamiento indefinido
 
-En mi experiencia los casos de comportamiento indefinido más comunes son:
+Los casos de comportamiento indefinido con los que más me he encontrado son:
 
 ## Usar un objeto nulo
 
@@ -154,9 +153,10 @@ void f(const A* a)
 ```
 
 En este caso, es comportamiento indefinido si ```a``` es nulo. 
+
 Existen varias formas de defenderse de este comportamiento. 
-La más directa es comprobar el valor.
-Si creemos que no es algo que debería pasar, podemos poner un assert al principio de la función para que también muestre un error en debug:
+La más directa es comprobar el valor del puntero antes de usarlo.
+Si creemos que nunca debería ser nulo, podemos poner un assert al principio de la función para que también muestre un error en debug:
 
 ```
 void f(const A* a)
@@ -176,7 +176,7 @@ double f(int index)
 }
 ```
 
-Esta función es indefinida cuando la variable ```a``` es mayor o igual que dos porque accedería a una posición incorrecta del array.
+Esta función es indefinida cuando la variable ```index``` es mayor o igual que dos porque accedería a una posición incorrecta del array.
 
 Una posible solución es comprobar el valor de la variable index y usar un objeto de tipo std::array en vez de un array ya que, generalmente, 
 comprueban el índice en debug:
@@ -190,7 +190,7 @@ double f(int index)
 }
 ```
 
-Dependiendo del programa, sería conveniente discutir qué ocurre si el valor de index es incorrecto.
+Dependiendo del programa, sería conveniente discutir qué debe ocurrir si el valor de index es incorrecto.
 Por ejemplo, podríamos devolver un valor por defecto o lanzar una excepción.
 
 
@@ -206,6 +206,7 @@ bool f(int index)
 ```
 
 Acceder a memoria sin inicializar es comportamiento indefinido. 
+
 Antiguamente, se decía que el valor de la variable sin inicializar era aleatorio.
 Sin embargo, esto no es cierto, ya que el compilador puede hace lo que crea conveniente en cada caso.
 Por ejemplo, la función anterior podría devolver siempre ```true``` y cumpliría el estándar.
@@ -216,7 +217,7 @@ La solución más sencilla es inicializar siempre las variables:
 bool f(int index)
 {
   int a{0};
-  
+
   return a == 3;
 }
 ```
@@ -226,11 +227,11 @@ bool f(int index)
 ```
 bool foo(int x)
 {
-  return x+1 > x;
+  return x + 1 > x;
 }
 ```
 
-La condición ```return x+1 > x;``` parece inocente. 
+La condición ```return x + 1 > x;``` parece inocente. 
 Sin embargo, cuando x ya está en el máximo valor de un entero, se produce un desbordamiento que puede volver el número negativo.
 Ahora bien, un desbordamiento de entero con signo es comportamiento indefinido por lo que lo más probable es que el compilador 
 no tenga en cuenta ese caso y siempre devuelva ```true```.
@@ -243,7 +244,7 @@ Hay que hacer notar que esto no ocurre en los enteros sin signo, por lo que en l
 ```
 bool foo(unsigned int x)
 {
-  return x+1 > x;
+  return x + 1 > x;
 }
 ```
 
@@ -252,7 +253,7 @@ El compilador tiene que añadir código para gestionar el desbordamiento y puede
 
 ## Violación de la ODR
 
-La ODR indica que un elemento sobre puede ser definido una vez o, en caso de hacerlo varias veces (por ejemplo si está en un archivo de cabecera),
+La ODR indica que un elemento puede ser definido una única vez o, en caso de hacerlo varias veces (por ejemplo si está en un archivo de cabecera),
 las definiciones deben ser idénticas.
 
 Normalmente, cuando se incumple esta regla, el linker puede detectarlo y emite un mensaje.
@@ -297,34 +298,43 @@ Hay una lista de herramientas en [Wikipedia](https://en.wikipedia.org/wiki/List_
  
 #7 ¿Cómo está relacionado el comportamiento indefinido con el optimizador?
 
-El comportamiento indefinido permite al optimizador descatar ramas que no puedan darse. 
+El comportamiento indefinido permite al optimizador eliminar casos que no deberían darse. 
+
+Por ejemplo, hemos visto que el comportamiento indefinido permite ignorar el desbordamiento de los enteros con signo.
+También permite eliminar la comprobación de los límites de un array o si el puntero es nulo.
+
+En algunos casos, permite optimizaciones más agresivas.
 Por ejemplo, ¿qué pasa si llamamos a la función g() en el siguiente código?
 
 ```
 int f(int *number)
 {
-  if(*number == 3) {return 1;}
+  int a = *number;
   if(number != nullptr) {
     return 0;
   }
   return 2;
 }
-
-void g()
-{
-  std::cout << f(nullptr) << std::endl;
-}
-
 ```
 
 El optimizador puede pensar:
  
 En la primera línea de la función se usa el puntero:
 
-  - Si el puntero no es nulo, hago la comparación y me apunto que el puntero no es nulo.
-  - Si el puntero es nulo puedo hacer lo que quiera, así que me apunto que el puntero no es nulo.
+  - Si el puntero no es nulo, asigno la variable y me apunto que el puntero no es nulo.
+  - Si el puntero es nulo puedo hacer lo que quiera porque es comportamiento indefinido, así que hago lo mismo que en el caso anterior.
   
-- En la segunda línea 
+En la segunda línea, la comprobación se ha vuelto redundante porque hemos definido que el puntero no es nulo, así que se puede eliminar.
+De esta manera, la función f siempre devuelve cero y quedaría:
+
+```
+int f(int *number)
+{
+  return 0;
+}
+```
+
+
 
 
 # Referencias
