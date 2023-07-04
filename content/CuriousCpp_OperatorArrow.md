@@ -2,6 +2,7 @@ Title: Curiosidades de C++: operador flecha
 Date: 2023-06-24
 Category: Curiosidades de C++
 
+
 La siguiente pregunta está tomada de StackOverflow, pero me ha parecido curiosa:
 [What is the '-->' operator in C/C++?](https://stackoverflow.com/q/1642028/218774)
 
