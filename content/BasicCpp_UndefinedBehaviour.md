@@ -2,6 +2,7 @@ Title: 8 cosas que todo programador de C++ debería saber sobre el comportamient
 Date: 2023-07-04
 Category: Iniciación C++
 
+
 # 0. ¿Qué  tipos de comportamiento hay en C++?
 
 El estándard C++ define cuatro tipos de comportamiento:
