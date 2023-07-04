@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Programando en tiempo real - jcallejap</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Programando en tiempo real</a></h1>
+                <nav><ul>
+                    <li><a href="/category/curiosidades-de-c.html">Curiosidades de C++</a></li>
+                    <li><a href="/category/iniciacion-c.html">Iniciación C++</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/8-cosas-que-todo-programador-de-c-deberia-saber-sobre-el-comportamiento-indefinido.html">8 cosas que todo programador de C++ debería saber sobre el comportamiento indefinido</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2023-07-04T00:00:00+02:00">
+                Published: Tue 04 July 2023
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/iniciacion-c.html">Iniciación C++</a>.</p>
+
+</footer><!-- /.post-info --><h1>0. ¿Qué  tipos de comportamiento hay en C++?</h1>
+<p>El estándard C++ define cuatro tipos de comportamiento:</p>
+<ul>
+<li>Comportamiento definido: la ejecución del programa es completamente predecible.</li>
+<li>Comportamiento definido por la implementación (implementation-defined behavior): la ejecución es predecible, pero depende del compilador o del entorno dentro de ciertos márgenes y estas variaciones deben estar documentadas.  Por ejemplo, el valor de <code>sizeof(int)</code>.</li>
+<li>Comportamiento no especificado (unspecified behavior): la ejecución no es predecible pero está dentro de ciertas opciones. Por ejemplo, el orden de evaluación de los argumentos de una función.
+ - Comportamiento sin definir (undefined behavior): la ejecución no es predecible y puede suceder cualquier cosa.</li>
+</ul>
+<p>Por otro lado, dentro de esos comportamientos, el compilador puede encontrar tres tipos de construcciones:</p>
+<ul>
+<li>Código mal formado (ill-formed): el código no se corresponde con C++ válido. El programa no es válido y el compilador genera un mensaje.</li>
+<li>Código mal formado sin diagnóstico (ill-formed no diagnostic required): el código contiene un error que no se ha podido detectar (por ejemplo, violación de ODR). La resultado de la ejecución es indefinido.</li>
+<li>Código bien formado (well-formed): el código se adhiere a las reglas de C++ y su ejecución se puede determinar dentro del estándar.</li>
+</ul>
+<p>Si juntamos la primera con la segunda lista, vemos que existe un tipo de comportamiento en el que la ejecución no es predecible y no se ha podido detectar.
+Es el <em>temido</em> comportamiento indefinido.</p>
+<h1>1 ¿Hasta qué punto es indefinido el comportamiento indefinido?</h1>
+<p>El estándar da completa y absoluta libertad al compilador para decidir qué hacer en caso de comportamiento indefinido.
+Posibles opciones son:</p>
+<ul>
+<li>Comportarse de forma esperada.</li>
+<li>Hacer fallar la aplicación.</li>
+<li>Hacer fallar la aplicación un tiempo después.</li>
+<li>Hacer fallar la aplicaicón un tiempo antes.</li>
+<li><a href="http://catb.org/jargon/html/N/nasal-demons.html">Hacer que salgan demonios de tu nariz</a>.</li>
+</ul>
+<p>Hay que tener en cuenta que cuando un programa pasa por comportamiento indefinido todo el programa es indefinido.
+Es decir, la aplicación podría fallar antes de pasar por la línea donde ocurre.</p>
+<p>Por ejemplo, queremos saber qué hace el siguiente código:</p>
+<div class="highlight"><pre><span></span><code><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">call_fa</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">fa</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>A primera vista, parece fácil.
+Llama a la función <code>fa()</code> del objeto <code>a</code>.
+Sin embargo, ¿qué pasa si el puntero <code>a</code> es nulo?
+En ese caso, el comportamiento es indefinido y el compilador no tiene que rendir cuentas del comportamiento.</p>
+<p>Lo más probable es que la aplicación falle porque se intenta acceder a una zona de memoria inválida.
+Aunque también puede pasar que el procesador no tenga la capacidad de detectar ese fallo y la función se ejecute sobre un objeto A inválido provocando corrupción de datos que harán fallar la aplicación más adelante. 
+También podría ser que el optimizador mueva la llamada de la función a otro punto y el programa falle antes o después de lo que se espera.</p>
+<p>Si seguimos pensando, se nos pueden ocurrir otros escenarios, como que <code>fa()</code> sea una función virtual y, al ser inválido el objeto, el punto de ejecución salte a una zona de memoria aleatoria.</p>
+<p>Lo importante es recordar que no hay ninguna limitación a lo que puede pasar. Incluso puede que el comportamiento cada vez que compilemos.</p>
+<h1>2 ¿Por qué existe el comportamiento indefinido?</h1>
+<p>En general, el comportamiento indefinido permite que el compilador no tenga que comprobar ciertos casos y así pueda adaptarse mejor al hardware que se está usando
+de forma que genere código más optimizado para diferentes plataformas. </p>
+<p>Por ejemplo, en el ejemplo del punto anterior:</p>
+<div class="highlight"><pre><span></span><code><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">call_fa</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">A</span><span class="w"> </span><span class="o">*</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">fa</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>El comportamiento indefinido le dice al compilador que no tiene que comprobar el caso en el que <code>a</code> es nulo porque si se da ese caso puede hacer lo que quiera.
+De esta forma, se evita la comprobación y se genera código más optimizado. </p>
+<p>Pongamos otro ejemplo:</p>
+<div class="highlight"><pre><span></span><code>int f() {
+  g();
+}
+</code></pre></div>
+
+<p>El estándar no dice lo que tiene que pasar si una función que debe devolver un valor no devuelve nada.
+Tal vez el programador sepa que g() nunca retorna porque siempre lanza una excepción o cierra la aplicación, por lo que no va a haber problemas.
+Pero el compilador no lo sabe y tiene que decidir qué hacer. Aquí se encuentra un problema:</p>
+<ul>
+<li>Si el estándar definiese el comportamiento, le obligaría a añadir código que nunca se va a usar.</li>
+<li>Si no se define, podría pasar cualquier cosa.</li>
+</ul>
+<p>Así pues, el estándard no indica qué debe pasar y el desarrollador del compilador puede hacer lo que más le convenga para su plataforma.</p>
+<h1>3 ¿Por qué es tan peligroso el comportamiento indefinido?</h1>
+<p>El comportamiento indefinido es una de las caracteristicas más peligrosas C++.</p>
+<p>Los motivos son varios, aunque los dos principales son:</p>
+<ul>
+<li>
+<p>Al dar libertad total al compilador, un programa indefinido podría listar todas las contraseñas del sistema.
+   Obviamente, el error no va a ser tan directo, pero nadie te asegura que no lo haga.
+   De hecho, muchos errores de seguridad se basan en el comportamiento indefinido de C o C++.</p>
+</li>
+<li>
+<p>Cuando hay un comportamiento indefinido, es muy difícil depurar el error.
+   Hay que entender que, si se da un comportamiento indefinido, todo el programa es indefinido.
+   Por lo que el error puede darse en la línea problemática o podría comportarse según lo esperado durante un tiempo y fallar más adelante.
+   Por ejemplo, una vez tuvimos un programa que violaba la ODR (más sencillo de lo que parece al usar templates) y
+   la aplicación fallaba nada más arrancar a pesar de que no se había llamado todavía a la función problemática.</p>
+</li>
+</ul>
+<p>De hecho, el comportamiento indefinido es una de las mayores quejas de los programadores de C++ y, a la vez, 
+lo que le da a C++ la capacidad de generar código optimizado en muchas arquitecturas.</p>
+<h1>4. ¿El compilador puede avisar del comportamiento indefinido?</h1>
+<p>El compilador no tiene obligación de avisar del comportamiento indefinido en todos los casos.</p>
+<p>Algunos compiladores avisan de los casos sencilos de detectar como:</p>
+<div class="highlight"><pre><span></span><code>int f() {}
+</code></pre></div>
+
+<p>Es comportamiento indefinido porque claramente la función no devuelve nada pese a que está declarada para devolver un entero.</p>
+<p>Sin embargo, algunos casos son muy complicados de detectar o sólo pueden detectarse en tiempo de ejecución, como por ejemplo:</p>
+<div class="highlight"><pre><span></span><code><span class="n">void</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">T</span><span class="w"> </span><span class="o">*</span><span class="n">object</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">object</span><span class="o">-&gt;</span><span class="n">f</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Si object es nulo, el programa es indefinido.</p>
+<p>En estos casos, para detectarlo, habría que añadir instrucciones que comprobasen que la variable no es nula. 
+Si el programador ya sabe que nunca lo será, se está penalizando la ejecución.</p>
+<h1>5 Ejemplos de comportamiento indefinido</h1>
+<p>Los casos de comportamiento indefinido con los que más me he encontrado son:</p>
+<h2>Usar un objeto nulo</h2>
+<div class="highlight"><pre><span></span><code><span class="nb nb-Type">void</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">A</span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">fa</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>En este caso, es comportamiento indefinido si <code>a</code> es nulo. </p>
+<p>Existen varias formas de defenderse de este comportamiento. 
+La más directa es comprobar el valor del puntero antes de usarlo.
+Si creemos que nunca debería ser nulo, podemos poner un assert al principio de la función para que también muestre un error en debug:</p>
+<div class="highlight"><pre><span></span><code><span class="nb nb-Type">void</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">A</span><span class="o">*</span><span class="w"> </span><span class="n">a</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="nb">assert</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">a</span><span class="o">-&gt;</span><span class="n">fa</span><span class="p">();</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h2>Acceder a índices incorrectos de un array</h2>
+<div class="highlight"><pre><span></span><code><span class="k">double</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="k">index</span><span class="p">)</span>
+<span class="err">{</span>
+<span class="w">  </span><span class="n">const</span><span class="w"> </span><span class="k">double</span><span class="w"> </span><span class="n">a</span><span class="o">[</span><span class="n">2</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="err">}</span><span class="p">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="o">[</span><span class="n">index</span><span class="o">]</span><span class="p">;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>Esta función es indefinida cuando la variable <code>index</code> es mayor o igual que dos porque accedería a una posición incorrecta del array.</p>
+<p>Una posible solución es comprobar el valor de la variable index y usar un objeto de tipo std::array en vez de un array ya que, generalmente, 
+comprueban el índice en debug:</p>
+<div class="highlight"><pre><span></span><code><span class="k">double</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="k">index</span><span class="p">)</span>
+<span class="err">{</span>
+<span class="w">  </span><span class="n">const</span><span class="w"> </span><span class="nl">std</span><span class="p">:</span><span class="err">:</span><span class="k">array</span><span class="o">&lt;</span><span class="k">double</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="o">&gt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">{</span><span class="mf">1.0</span><span class="p">,</span><span class="w"> </span><span class="mf">2.0</span><span class="err">}</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="p">(</span><span class="k">index</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="k">index</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="o">[</span><span class="n">index</span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="err">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mf">0.0</span><span class="p">;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>Dependiendo del programa, sería conveniente discutir qué debe ocurrir si el valor de index es incorrecto.
+Por ejemplo, podríamos devolver un valor por defecto o lanzar una excepción.</p>
+<h2>Acceder a memoria sin inicializar</h2>
+<div class="highlight"><pre><span></span><code><span class="nv">bool</span><span class="w"> </span><span class="nv">f</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">index</span><span class="ss">)</span>
+{
+<span class="w">  </span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span><span class="c1">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="c1">;</span>
+}
+</code></pre></div>
+
+<p>Acceder a memoria sin inicializar es comportamiento indefinido. </p>
+<p>Antiguamente, se decía que el valor de la variable sin inicializar era aleatorio.
+Sin embargo, esto no es cierto, ya que el compilador puede hace lo que crea conveniente en cada caso.
+Por ejemplo, la función anterior podría devolver siempre <code>true</code> y cumpliría el estándar.</p>
+<p>La solución más sencilla es inicializar siempre las variables:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">bool</span><span class="w"> </span><span class="nv">f</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">index</span><span class="ss">)</span>
+{
+<span class="w">  </span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span>{<span class="mi">0</span>}<span class="c1">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">3</span><span class="c1">;</span>
+}
+</code></pre></div>
+
+<h2>Desbordamiento de enteros con signo</h2>
+<div class="highlight"><pre><span></span><code><span class="nv">bool</span><span class="w"> </span><span class="nv">foo</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">x</span><span class="ss">)</span>
+{
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">x</span><span class="c1">;</span>
+}
+</code></pre></div>
+
+<p>La condición <code>return x + 1 &gt; x;</code> parece inocente. 
+Sin embargo, cuando x ya está en el máximo valor de un entero, se produce un desbordamiento que puede volver el número negativo.
+Ahora bien, un desbordamiento de entero con signo es comportamiento indefinido por lo que lo más probable es que el compilador 
+no tenga en cuenta ese caso y siempre devuelva <code>true</code>.
+Por otro lado, algún procesador podría decidir lanzar una excepción por lo que tampoco podemos confiar en este comportamiento.</p>
+<p>Por eso, si creemos que el valor de <code>x</code> puede provocar un desbordamiento, habría que comprobar el valor o modificar la función.</p>
+<p>Hay que hacer notar que esto no ocurre en los enteros sin signo, por lo que en la siguiente función:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">bool</span><span class="w"> </span><span class="nv">foo</span><span class="ss">(</span><span class="nv">unsigned</span><span class="w"> </span><span class="nv">int</span><span class="w"> </span><span class="nv">x</span><span class="ss">)</span>
+{
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="nv">x</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nv">x</span><span class="c1">;</span>
+}
+</code></pre></div>
+
+<p>El compilador tiene que añadir código para gestionar el desbordamiento y puede resultar más lenta que la anterior.</p>
+<h2>Violación de la ODR</h2>
+<p>La ODR indica que un elemento puede ser definido una única vez o, en caso de hacerlo varias veces (por ejemplo si está en un archivo de cabecera),
+las definiciones deben ser idénticas.</p>
+<p>Normalmente, cuando se incumple esta regla, el linker puede detectarlo y emite un mensaje.
+Sin embargo, no siempre es así.</p>
+<p>Por ejemplo, si se tienen dos archivos:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// A.cpp</span>
+<span class="nb">struct</span><span class="w"> </span><span class="n">A</span><span class="p">{</span>
+<span class="w">  </span><span class="nb">char</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="c1">// B.cpp</span>
+<span class="nb">struct</span><span class="w"> </span><span class="n">A</span><span class="p">{</span>
+<span class="w">  </span><span class="nb">int</span><span class="w"> </span><span class="n">a</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>Al ser ambas definiciones de la estructura <code>A</code> distintas, puede probocar comportamiento indefinido.</p>
+<p>La solución es no declarar estructuras globales dentro de unidades de compilación. 
+En caso de tener que hacerlo, utilizar namespaces anónimos para indicar que la declaración no debe salir fuera de la unidad de compilación.</p>
+<h1>6. ¿Qué se puede hacer para minimizar los riesgos?</h1>
+<p>En general, hay que seguir un conjunto de buenas prácticas de C++. 
+Por ejemplo:</p>
+<ul>
+<li>Activar todos los avisos del compilador.</li>
+<li>No usar punteros en bruto sino alguna de las múltiples alternativas para gestionar la memoria (std::vector, std::unique_ptr, std::shared_ptr, ...).</li>
+<li>Usar std::array en vez de arrays de C. </li>
+<li>Usar conversiones de C++ (static_cast, ...) en vez de conversiones de C.</li>
+</ul>
+<p>Además, también es importante utilizar herramientas de análisis estático como:</p>
+<ul>
+<li><a href="http://cppcheck.sourceforge.net/">Cppcheck</a></li>
+<li><a href="https://clang-analyzer.llvm.org/">CLang Static Analyzer</a></li>
+</ul>
+<p>Hay una lista de herramientas en <a href="https://en.wikipedia.org/wiki/List_of_tools_for_static_code_analysis">Wikipedia</a>.</p>
+<h1>7 ¿Cómo está relacionado el comportamiento indefinido con el optimizador?</h1>
+<p>El comportamiento indefinido permite al optimizador eliminar casos que no deberían darse. </p>
+<p>Por ejemplo, hemos visto que el comportamiento indefinido permite ignorar el desbordamiento de los enteros con signo.
+También permite eliminar la comprobación de los límites de un array o si el puntero es nulo.</p>
+<p>En algunos casos, permite optimizaciones más agresivas.
+Por ejemplo, ¿qué pasa si llamamos a la función g() en el siguiente código?</p>
+<div class="highlight"><pre><span></span><code><span class="nv">int</span><span class="w"> </span><span class="nv">f</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="o">*</span><span class="nv">number</span><span class="ss">)</span>
+{
+<span class="w">  </span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="nv">number</span><span class="c1">;</span>
+<span class="w">  </span><span class="k">if</span><span class="ss">(</span><span class="nv">number</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="nv">nullptr</span><span class="ss">)</span><span class="w"> </span>{
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="c1">;</span>
+<span class="w">  </span>}
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">2</span><span class="c1">;</span>
+}
+</code></pre></div>
+
+<p>El optimizador puede pensar:</p>
+<p>En la primera línea de la función se usa el puntero:</p>
+<ul>
+<li>Si el puntero no es nulo, asigno la variable y me apunto que el puntero no es nulo.</li>
+<li>Si el puntero es nulo puedo hacer lo que quiera porque es comportamiento indefinido, así que hago lo mismo que en el caso anterior.</li>
+</ul>
+<p>En la segunda línea, la comprobación se ha vuelto redundante porque hemos definido que el puntero no es nulo, así que se puede eliminar.
+De esta manera, la función f siempre devuelve cero y quedaría:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">int</span><span class="w"> </span><span class="nv">f</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="o">*</span><span class="nv">number</span><span class="ss">)</span>
+{
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="c1">;</span>
+}
+</code></pre></div>
+
+<h1>Referencias</h1>
+<p><a href="https://stackoverflow.com/q/22180312/218774">Difference between Undefined Behavior and Ill-formed, no diagnostic message required</a>
+<a href="https://stackoverflow.com/q/2397984/218774">https://en.cppreference.com/w/c/language/behavior</a>
+<a href="https://gist.github.com/Earnestly/7c903f481ff9d29a3dd1">C99 List of Undefined Behavior</a>
+<a href="https://en.cppreference.com/w/c/language/behavior">CUndefined behavior</a>
+<a href="https://blog.regehr.org/archives/213">A Guide to Undefined Behavior in C and C++</a>
+<a href="https://akrzemi1.wordpress.com/2016/11/28/the-one-definition-rule/">The One-Definition Rule</a></p>                </article>
+            </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/curiosidades-de-c-operador-flecha.html" rel="bookmark"
+                           title="Permalink to Curiosidades de C++: operador flecha">Curiosidades de C++: operador flecha</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2023-06-24T00:00:00+02:00">
+                Published: Sat 24 June 2023
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/curiosidades-de-c.html">Curiosidades de C++</a>.</p>
+
+</footer><!-- /.post-info -->                <p>La siguiente pregunta está tomada de StackOverflow, pero me ha parecido curiosa:
+<a href="https://stackoverflow.com/q/1642028/218774">What is the '--&gt;' operator in C/C++?</a></p>
+<h1>Pregunta</h1>
+<p>¿Es correcto el siguiente código?
+¿Qué imprime?</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;stdio.h&gt;</span>
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">--&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="c1">// x goes to 0</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h1>Respuesta corta</h1>
+<p>Es correcto e …</p>
+                <a class="readmore" href="/curiosidades-de-c-operador-flecha.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="/curiosidades-de-c-usar-la-misma-variable-en-dos-bucles-anidados.html" rel="bookmark"
+                           title="Permalink to Curiosidades de C++: usar la misma variable en dos bucles anidados">Curiosidades de C++: usar la misma variable en dos bucles anidados</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2019-11-09T13:14:00+01:00">
+                Published: Sat 09 November 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/curiosidades-de-c.html">Curiosidades de C++</a>.</p>
+
+</footer><!-- /.post-info -->                <h1>Pregunta</h1>
+<p>¿Es correcto el siguiente código para imprimir un triángulo invertido?</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">auto</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">limit</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s1">&#39;-&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h1>Respuesta corta</h1>
+<p><a href="https://coliru.stacked-crooked.com/a/c4049493567cbfa8">Sí</a></p>
+<h1>Respuesta larga</h1>
+<p>Es posible crear dos variables con el mismo nombre …</p>
+                <a class="readmore" href="/curiosidades-de-c-usar-la-misma-variable-en-dos-bucles-anidados.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://stackoverflow.com/users/218774/j-calleja">StackOverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

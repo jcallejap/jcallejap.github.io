@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Crear un blog con Pelican en github</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="Introducción Este blog está creado con Pelican y servido por GibHub Pages. Pelican es una aplicación desarrollada en Python para crear páginas web..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Programando en tiempo real</a></h1>
+                <nav><ul>
+                    <li><a href="/category/curiosidades-de-c.html">Curiosidades de C++</a></li>
+                    <li><a href="/category/iniciacion-c.html">Iniciación C++</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/drafts/crear-un-blog-con-pelican-en-github.html" rel="bookmark"
+           title="Permalink to Crear un blog con Pelican en github">Crear un blog con Pelican en github</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2023-07-04T00:00:00+02:00">
+                Published: Tue 04 July 2023
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/blogs.html">Blogs</a>.</p>
+
+</footer><!-- /.post-info -->      <h1>Introducción</h1>
+<p>Este blog está creado con Pelican y servido por GibHub Pages.</p>
+<p>Pelican es una aplicación desarrollada en Python para crear páginas web estáticas a partir de archivos Markdown.</p>
+<p>GitHub Pages es una utilidad de GitHub que permite alojar páginas web estáticas a partir de repositorios de GitHub.</p>
+<p>Para mantener el blog actualizado, tenemos un único repositorio con dos ramas:</p>
+<ul>
+<li>main: contiene los archivos fuente necesarios para generar el blog.</li>
+<li>gh-pages: contiene los archivos del blog.</li>
+</ul>
+<p>Además, se ha creado una acción para regenerar la rama <em>gh-pages</em> cada vez que se sube un cambio a la rama <em>main</em>.</p>
+<h1>Instalación de Pelican</h1>
+<p>Los pasos para instalar Pelican son:</p>
+<ol>
+<li>Instalar Python. En el momento de escribir este texto, estoy usando Python 3.11.4.</li>
+<li>Instalar Pelican en Python: <code>python -m pip install "pelican[markdown]"</code></li>
+</ol>
+<p>Hay más información en la <a href="https://docs.getpelican.com/en/stable/quickstart.html#installation">guía de inicio de Pelican</a>.</p>
+<h1>Crear el repositorio de páginas de GitHub</h1>
+<p>GibHub permite alojar una página web estática a partir de un repositorio de GibHub.
+Estas páginas pueden servir, por ejemplo, para la documentación de un proyecto. 
+Sin embargo, hay un repositorio especial que sirve como presentación del perfil de GibHub que es el que vamos a usar para el blog.</p>
+<p>Para crearlo, hay que seguir los siguientes pasos:</p>
+<ol>
+<li>Crear un repositorio en GibHub con el nombre <em>username.github.io</em> donde username es nuestro nombre de usuario.</li>
+<li>Crear una rama <em>gh-pages</em>.</li>
+<li>Abrir las opciones del repositorio.</li>
+<li>
+<p>Entrar dentro de las opciones de Pages y seleccionar:</p>
+<ul>
+<li>Source: deploy from branch.</li>
+<li>Branch: gh-pages/root</li>
+</ul>
+</li>
+<li>
+<p>Clonar el repositorio en local, usando <code>git clone https://github.com/username/username.github.io</code></p>
+</li>
+</ol>
+<p>En vez de generar los archivos del blog en local y subirlos a GitHub, podemos crear una acción para regenerarlos automáticamente.
+Para ello, hay que crear un directorio <em>.github/workflows</em> dentro del repositorio y colocar un archivo.</p>
+<p>Puedes ver un ejemplo en <a href="https://github.com/jcallejap/jcallejap.github.io/blob/main/.github/workflows/pelican_blog.yml">pelican_blog.yml</a>.</p>
+<p>Este ejemplo está basado en el repositorio de <a href="https://github.com/nelsonjchen/gh-pages-pelican-action">nelsonjchen</a></p>
+<h1>Creación de un proyecto de blog</h1>
+<p>Una vez instalado Pelican y preparado el repositorio, se puede ya comenzar con el blog:</p>
+<ol>
+<li>Entrar dentro del directorio donde se ha clonado el repositorio de GitHub.</li>
+<li>Crear el archivo de requerimientos de Python usando <code>pip freeze &gt; requirements.txt</code></li>
+<li>Ejecutar <code>pelican-quickstart</code>.</li>
+<li>Contestar a las preguntas que se va haciendo. Muchas de ellas se puede dejar el valor por defecto, aunque conviene personalizar:<ul>
+<li>Título del blog.</li>
+<li>Autor del blog.</li>
+<li>Prefijo URL. Se puede seleccionar que no, si no se va a publicar el blog en otra url.</li>
+<li>Subir el blog a GitHub Pages: se selecciona que sí.</li>
+<li>Es un blog personal de GitHub Pages: si es el caso, se puede seleccionar.</li>
+</ul>
+</li>
+</ol>
+<p>Una vez creado el esqueleto, los artículos se escriben en formato Markdown dentro del directorio <em>content</em>.</p>
+<p>Para generar el blog localmente, se utiliza <code>pelican content</code>.</p>
+<p>Para visualizar el blog en local, se debe ejecutar: <code>pelican --listen</code> y abrir la página <a href="http://localhost:8000/">local</a> con un navegador.</p>
+<h1>Temas</h1>
+<p>Para listar los temas disponbiles basta con hacer:
+pelican-themes --lista</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://stackoverflow.com/users/218774/j-calleja">StackOverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

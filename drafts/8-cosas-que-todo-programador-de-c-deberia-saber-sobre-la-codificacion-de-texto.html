@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>8 cosas que todo programador de C++ debería saber sobre la codificación de texto</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="0. No existe el texto plano Para una persona, un texto es un conjunto de caracteres. Para un ordenador, un texto es una lista de números. Es..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Programando en tiempo real</a></h1>
+                <nav><ul>
+                    <li><a href="/category/curiosidades-de-c.html">Curiosidades de C++</a></li>
+                    <li class="active"><a href="/category/iniciacion-c.html">Iniciación C++</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/drafts/8-cosas-que-todo-programador-de-c-deberia-saber-sobre-la-codificacion-de-texto.html" rel="bookmark"
+           title="Permalink to 8 cosas que todo programador de C++ debería saber sobre la codificación de texto">8 cosas que todo programador de C++ debería saber sobre la codificación de texto</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2019-11-09T13:14:00+01:00">
+                Published: Sat 09 November 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/iniciacion-c.html">Iniciación C++</a>.</p>
+
+</footer><!-- /.post-info -->      <h1>0. No existe el <em>texto plano</em></h1>
+<p>Para una persona, un texto es un conjunto de caracteres. </p>
+<p>Para un ordenador, un texto es una lista de números.</p>
+<p>Es necesario definir la función que pase de los números a los caracteres y viceversa.
+Esta función puede ser tan sencilla como una tabla o tan compleja como un sistema de encriptación.
+En cualquier caso, es necesario definirla y que sea conocido por ambas partes.</p>
+<p>Si una de las partes no tiene acceso a esta función, no es posible la comunicación.</p>
+<h1>1. Codificar caracteres es complicado</h1>
+<p>Antes de definir la función de codificación/decodificación del texto, es necesario hacer algunas definiciones.
+Vamos a tomar las del estándar Unicode, por ser el más extendido.</p>
+<h2>Letra</h2>
+<p>La letra es la únidad mínima de un texto. 
+Por ejemplo, tenemos la letra <em>a</em>. 
+Esta letra es distinta a la <em>A</em> o la <em>b</em>.</p>
+<p>Cada idioma puede tener sus propias reglas para definir qué es una letra. </p>
+<p>Estas reglas pueden cambiar. Por ejemplo, en español antiguamente existía la letra <em>che</em> (ch) o la letra elle (ll). 
+Alfabeticamente, <em>calvo</em> venía antes que <em>calle</em> porque la letra <em>ll</em> estaba en el alfabeto después de la <em>l</em>.
+Sin embargo, ya no es así.</p>
+<p>Estas reglas pueden tener disputas políticas o teóricas. 
+Por ejemplo, ¿es la letra <em>á</em> la misma que la letra <em>a</em>?
+¿Son los emojis letras?</p>
+<h2>Punto de código (code point)</h2>
+<p>Una vez hemos decidido un conjunto de letras diferenciadas, se le asigna un número a cada una. </p>
+<h1>2. Existen muchos tipos de codificaciones</h1>
+<p>ASCII
+ANSI
+Unicode</p>
+<h1>3. La libraría heredada de C está pensada para ASCII</h1>
+<h1>4. Algunas codificaciones necesitan información extra para mostrar el texto</h1>
+<ul>
+<li>Byte order</li>
+<li>Codepage</li>
+</ul>
+<h1>5. Hay que indicar también la codificación de los archivos de texto</h1>
+<h1>6. No todos los sistemas operativos tienen la misma codificación interna y eso importa</h1>
+<p>Linux utiliza UTF-8 mientras que Windows suele usar UTF-16, aunque es posible cambiarlo en Windows 10.</p>
+<h1>7. La comparación de textos es mucho más complicada de lo que parece</h1>
+<h1>Referencias</h1>
+<p>https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://stackoverflow.com/users/218774/j-calleja">StackOverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

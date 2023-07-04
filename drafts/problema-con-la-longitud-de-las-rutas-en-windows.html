@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Problema con la longitud de las rutas en Windows</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="Los paths en Windows Las rutas de archivos en Windows se componen de: - Letra de la unidad, seguido por el separador ':'. - Barra '\' para indicar..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Programando en tiempo real</a></h1>
+                <nav><ul>
+                    <li><a href="/category/curiosidades-de-c.html">Curiosidades de C++</a></li>
+                    <li><a href="/category/iniciacion-c.html">Iniciación C++</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/drafts/problema-con-la-longitud-de-las-rutas-en-windows.html" rel="bookmark"
+           title="Permalink to Problema con la longitud de las rutas en Windows">Problema con la longitud de las rutas en Windows</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2019-11-09T13:14:00+01:00">
+                Published: Sat 09 November 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/windows.html">Windows</a>.</p>
+
+</footer><!-- /.post-info -->      <h1>Los paths en Windows</h1>
+<p>Las rutas de archivos en Windows se componen de:
+ - Letra de la unidad, seguido por el separador ':'.
+ - Barra '\' para indicar el directorio raíz.
+ - Nombres de directorios, separados por '\'.
+ - Nombre del archivo.</p>
+<p>Por ejemplo, las siguientes rutas indican:
+Directorio\archivo.pdf  Ruta relativa desde el directorio actual.
+C:\Directorio\archivo.pdf   Ruta absoluta desde el raíz de la unidad C.
+C:Directorio\archivo.pdf    Ruta relativa desde el directorio actual de la unidad C.</p>
+<p>Los directorios con significados especiales son:
+ - <em>..</em>: directorio anterior.
+ - <em>.</em>: directorio actual.</p>
+<h1>El límite de tamaño</h1>
+<p>En algunas versiones antiguas de Windows, el tamaño máximo de la ruta que se puede pasar a una función de Windows es de 260 caracteres, incluyendo el último de terminación.
+Es decir, no se puede pasar una ruta superior a 259 caracteres.</p>
+<p>Sin embargo, no es el tamaño máximo de un path absoluto de un archivo.
+Por ejemplo, un si la ruta de un archivo es "C:\NombreGrande\NombrePequeño\a.txt", podemos poner la ruta actual de C: en "c:\NombreGrande" y luego pasar la ruta relativa "NombrePequeño\a".
+Mientras ambas rutas no sobrepasen 259 caracteres, no habrá ningún problema.</p>
+<h1>Referencias</h1>
+<p>https://docs.microsoft.com/es-es/windows/win32/fileio/naming-a-file
+https://docs.microsoft.com/es-es/dotnet/standard/io/file-path-formats
+https://stackoverflow.com/a/837855/218774</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://stackoverflow.com/users/218774/j-calleja">StackOverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

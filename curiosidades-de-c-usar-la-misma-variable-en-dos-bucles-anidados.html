@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Curiosidades de C++: usar la misma variable en dos bucles anidados</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="Pregunta ¿Es correcto el siguiente código para imprimir un triángulo invertido? for(int i=0; i<5; ++i) { const auto limit = 5 - i; for(int i=0;..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Programando en tiempo real</a></h1>
+                <nav><ul>
+                    <li class="active"><a href="/category/curiosidades-de-c.html">Curiosidades de C++</a></li>
+                    <li><a href="/category/iniciacion-c.html">Iniciación C++</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/curiosidades-de-c-usar-la-misma-variable-en-dos-bucles-anidados.html" rel="bookmark"
+           title="Permalink to Curiosidades de C++: usar la misma variable en dos bucles anidados">Curiosidades de C++: usar la misma variable en dos bucles anidados</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2019-11-09T13:14:00+01:00">
+                Published: Sat 09 November 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/curiosidades-de-c.html">Curiosidades de C++</a>.</p>
+
+</footer><!-- /.post-info -->      <h1>Pregunta</h1>
+<p>¿Es correcto el siguiente código para imprimir un triángulo invertido?</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">auto</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">limit</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s1">&#39;-&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h1>Respuesta corta</h1>
+<p><a href="https://coliru.stacked-crooked.com/a/c4049493567cbfa8">Sí</a></p>
+<h1>Respuesta larga</h1>
+<p>Es posible crear dos variables con el mismo nombre si están en un <em>scope</em> diferente, aunque sean <em>scopes</em> anidados.</p>
+<p>Por otro lado, cada bucle <em>for</em> crea un nuevo <em>scope</em> para su variable interna.</p>
+<p>Por lo tanto, en el ejemplo, tenemos dos scopes independientes: uno para cada <em>for</em> y en cada uno hay una variable <code>i</code> declarada.</p>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://stackoverflow.com/users/218774/j-calleja">StackOverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

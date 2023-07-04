@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>8 cosas que todo programador de C++ debería saber sobre el optimizador</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+        <meta name="description" content="0. ¿Qué es el optimizador de C++? Es una etapa de la compilación en la que se hacen modificaciones automáticas al código para que sea más..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">Programando en tiempo real</a></h1>
+                <nav><ul>
+                    <li><a href="/category/curiosidades-de-c.html">Curiosidades de C++</a></li>
+                    <li class="active"><a href="/category/iniciacion-c.html">Iniciación C++</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="/drafts/8-cosas-que-todo-programador-de-c-deberia-saber-sobre-el-optimizador.html" rel="bookmark"
+           title="Permalink to 8 cosas que todo programador de C++ debería saber sobre el optimizador">8 cosas que todo programador de C++ debería saber sobre el optimizador</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2019-11-09T13:14:00+01:00">
+                Published: Sat 09 November 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/jcallejap.html">jcallejap</a>
+        </address>
+<p>In <a href="/category/iniciacion-c.html">Iniciación C++</a>.</p>
+
+</footer><!-- /.post-info -->      <h1>0. ¿Qué es el optimizador de C++?</h1>
+<p>Es una etapa de la compilación en la que se hacen modificaciones automáticas al código para que sea más eficiente.</p>
+<h1>1. ¿Puede cambiar lo que hace mi código?</h1>
+<p>No puede cambiar lo que hace tu código, pero sí puede cambiar cómo lo hace.</p>
+<p>El optimizador tiene permiso para hacer cambios mientras sea imposible diferenciar las salidas del programa original frente al optimizado.</p>
+<p>Por ejemplo, supongamos el siguiente código:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="err">int</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">3</span><span class="p">;</span>
+<span class="w">  </span><span class="err">++a</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="err">return</span><span class="w"> </span><span class="err">0</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>El optimizador puede eliminar la variable a y generar un programa que únicamente imprima el número 4.</p>
+<h1>2. ¿En qué se fija el optimizador para decidir qué se puede o no se puede cambiar?</h1>
+<p>El optimizador puede hacer cambios en el código siempre que no cambie sus salidas.</p>
+<p>Se considera una salida cualquier dato que salga al exterior de la aplicación. Por ejemplo:</p>
+<ul>
+<li>Imprimir un valor por consola.</li>
+<li>Mostrar un valor en un interfaz gráfico.</li>
+<li>Guardar un dato en disco.</li>
+<li>Enviar un dato por red.</li>
+<li>Activar un pin de una tarjeta de entradas/salidas digitales.</li>
+</ul>
+<p>De hecho, el conjunto de posibles salidas es tan amplio que se considera que cualquier función de la que no tiene el código fuente
+puede generar una salida y no se puede optimizar.</p>
+<p>Por ejemplo, el siguiente código:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">int</span><span class="w"> </span><span class="nv">main</span><span class="ss">()</span>
+{
+<span class="w">  </span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="c1">;</span>
+<span class="w">  </span><span class="k">for</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="mi">0</span><span class="c1">;i&lt;10000;++i) {</span>
+<span class="w">    </span><span class="nv">a</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">3</span><span class="c1">;</span>
+<span class="w">  </span>}<span class="w">  </span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="c1">;  </span>
+}
+</code></pre></div>
+
+<p>La variable a no se muestra, por lo que se puede eliminar. Si se elimina esta variable, se puede eliminar el bucle.
+Así pues, este programa no hace nada y el compilador puede generar un programa vacío que se ejecuta inmediatamente.</p>
+<p>Si añadimos un uso a la variable a:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">extern</span><span class="w"> </span><span class="nv">void</span><span class="w"> </span><span class="nv">f</span><span class="ss">(</span><span class="nv">int</span><span class="ss">)</span><span class="c1">;</span>
+
+<span class="nv">int</span><span class="w"> </span><span class="nv">main</span><span class="ss">()</span>
+{
+<span class="w">  </span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="c1">;</span>
+<span class="w">  </span><span class="k">for</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="mi">0</span><span class="c1">;i&lt;10000;++i) {</span>
+<span class="w">    </span><span class="nv">a</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="mi">3</span><span class="c1">;</span>
+<span class="w">  </span>}<span class="w">  </span>
+<span class="w">  </span><span class="nv">f</span><span class="ss">(</span><span class="nv">a</span><span class="ss">)</span><span class="c1">;</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="c1">;  </span>
+}
+</code></pre></div>
+
+<p>Ahora el optimizador no sabe si la función f(int) va a mostrar el dato que se le pasa.
+Sin embargo, un optimizador suficientemente bueno, se daria cuenta que a siempre vale 30000 al final del bucle.
+Por lo tanto, podría  eliminar la variable, eliminar el bucle y generar un programa que sólo llama a la función con un argumento de 30000.</p>
+<h1>3. ¿Qué tipo de cambios puede hacer?</h1>
+<p>Se permite cualquier cambio siempre que se cumplan las restricciones anteriores.</p>
+<p>Por ejemplo:</p>
+<p><em>Eliminar una variable</em></p>
+<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="err">int</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">3</span><span class="p">;</span>
+<span class="w">  </span><span class="err">++a</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s2">&quot;Hello world&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="err">return</span><span class="w"> </span><span class="err">0</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>La variable a se puede eliminar.</p>
+<p><em>Reutilizar una variable</em></p>
+<div class="highlight"><pre><span></span><code><span class="nt">extern</span><span class="w"> </span><span class="nt">int</span><span class="w"> </span><span class="nt">f</span><span class="o">(</span><span class="nt">int</span><span class="o">);</span>
+<span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="err">int</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">f(1)</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="err">int</span><span class="w"> </span><span class="err">b</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">f(2)</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="err">return</span><span class="w"> </span><span class="err">0</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Las variables a y b pueden ser la misma.</p>
+<p><em>Reordenar código</em></p>
+<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="err">int</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">4</span><span class="p">;</span>
+<span class="w">  </span><span class="err">if(a</span><span class="w"> </span><span class="err">&gt;</span><span class="w"> </span><span class="err">1)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">if</span><span class="o">(</span><span class="nt">a</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="nt">1</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s2">&quot;World&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="nt">return</span><span class="w"> </span><span class="nt">0</span><span class="o">;</span><span class="w">  </span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>La variable a puede desaparecer para usar la constante 4.
+Eso hace que los if se puedan evaluar en tiempo de compilación y el código quedaría:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s2">&quot;Hello&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s2">&quot;World&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="w">  </span>
+<span class="w">  </span><span class="err">return</span><span class="w"> </span><span class="err">0</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><em>Inline functions</em></p>
+<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">f</span><span class="o">(</span><span class="nt">int</span><span class="w"> </span><span class="nt">a</span><span class="o">)</span><span class="w"> </span><span class="p">{</span><span class="err">return</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">+</span><span class="w"> </span><span class="err">1</span><span class="p">;}</span>
+<span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="err">int</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">4</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="err">return</span><span class="w"> </span><span class="err">0</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>La llamada a la función f(int) se puede eliminar y dejar únicamente el cuerpo:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="err">int</span><span class="w"> </span><span class="err">a</span><span class="w"> </span><span class="err">=</span><span class="w"> </span><span class="err">4</span><span class="p">;</span>
+<span class="w">  </span><span class="n">std</span><span class="p">:</span><span class="o">:</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+<span class="w">  </span><span class="err">return</span><span class="w"> </span><span class="err">0</span><span class="p">;</span><span class="w">  </span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p><em>Loop unrolling</em></p>
+<div class="highlight"><pre><span></span><code><span class="nc">int</span><span class="w"> </span><span class="n">f</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="err">{</span><span class="k">return</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="err">}</span>
+<span class="nc">int</span><span class="w"> </span><span class="n">main</span><span class="p">()</span>
+<span class="err">{</span>
+<span class="w">  </span><span class="nc">int</span><span class="w"> </span><span class="n">a</span><span class="o">[</span><span class="n">3</span><span class="o">]</span><span class="p">;</span>
+<span class="w">  </span><span class="k">for</span><span class="p">(</span><span class="nc">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">3</span><span class="p">;</span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">    </span><span class="n">a</span><span class="o">[</span><span class="n">i</span><span class="o">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">  </span><span class="err">}</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w">  </span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>El loop se puede quitar para dejar únicamente las asignaciones:</p>
+<div class="highlight"><pre><span></span><code><span class="nv">int</span><span class="w"> </span><span class="nv">f</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span><span class="ss">)</span><span class="w"> </span>{<span class="k">return</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="c1">;}</span>
+<span class="nv">int</span><span class="w"> </span><span class="nv">main</span><span class="ss">()</span>
+{
+<span class="w">  </span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span>[<span class="mi">3</span>]<span class="c1">;</span>
+<span class="w">  </span><span class="nv">a</span>[<span class="mi">0</span>]<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="c1">;</span>
+<span class="w">  </span><span class="nv">a</span>[<span class="mi">1</span>]<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="c1">;</span>
+<span class="w">  </span><span class="nv">a</span>[<span class="mi">2</span>]<span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="c1">;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="c1">;  </span>
+}
+</code></pre></div>
+
+<p><em>Compile time execution</em></p>
+<p>Parte del código se puede ejecutar en tiempo de compilación.</p>
+<div class="highlight"><pre><span></span><code><span class="nv">int</span><span class="w"> </span><span class="nv">f</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span><span class="ss">)</span><span class="w"> </span>{<span class="k">return</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="c1">;}</span>
+<span class="nv">int</span><span class="w"> </span><span class="nv">main</span><span class="ss">()</span>
+{
+<span class="w">  </span><span class="nv">int</span><span class="w"> </span><span class="nv">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="c1">;</span>
+<span class="w">  </span><span class="k">for</span><span class="ss">(</span><span class="nv">int</span><span class="w"> </span><span class="nv">i</span><span class="o">=</span><span class="mi">0</span><span class="c1">;i&lt;10;++i) {</span>
+<span class="w">    </span><span class="nv">a</span><span class="w"> </span><span class="o">*=</span><span class="w"> </span><span class="mi">2</span><span class="c1">;</span>
+<span class="w">  </span>}
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="c1">;  </span>
+}
+</code></pre></div>
+
+<h1>4. ¿Cómo se relaciona con los benchmarks?</h1>
+<p>Normalmente, uno de los parámetros que el optimizador intenta mejorar es el tiempo de ejecución. 
+Para ello, puede hacer modificaciones en el código que se puede medir, estropeando las mediciones.</p>
+<p>Por ejemplo, </p>
+<p>,
+Para el optimizador, el código que se utiliza para leer tiempos no es diferente del código normal.
+Por lo tanto, es posible reordenarlo.</p>
+<p>Por ejemplo, tomemos el siguiente código que intenta medir el tiempo de la función <code>f()</code>.</p>
+<div class="highlight"><pre><span></span><code><span class="nt">extern</span><span class="w"> </span><span class="nt">int</span><span class="w"> </span><span class="nt">f</span><span class="o">(</span><span class="nt">int</span><span class="w"> </span><span class="nt">a</span><span class="o">);</span>
+<span class="nt">int</span><span class="w"> </span><span class="nt">main</span><span class="o">()</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="err">tic()</span><span class="p">;</span>
+<span class="w">  </span><span class="err">for(int</span><span class="w"> </span><span class="err">i=0</span><span class="p">;</span><span class="err">i&lt;1000</span><span class="p">;</span><span class="err">++i)</span><span class="w"> </span><span class="err">{</span>
+<span class="w">     </span><span class="err">f(a)</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">std</span><span class="p">::</span><span class="nd">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="nt">toc</span><span class="o">()</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="nt">std</span><span class="p">::</span><span class="nd">endl</span><span class="o">;</span>
+
+<span class="w">  </span><span class="nt">return</span><span class="w"> </span><span class="nt">0</span><span class="o">;</span><span class="w">  </span>
+<span class="err">}</span>
+</code></pre></div>
+
+<p>Por un lado, si el optimizador tiene acceso al código de la función f() y no tiene ningún efecto en la salida del programa, puede eliminar las llamadas a la función.</p>
+<h1>5. ¿Cómo se relaciona con el multi-hilo?</h1>
+<h1>6. ¿Cómo se relaciona con el comportamiento indefinido?</h1>
+<h1>7. ¿Cómo puedo ayudar al optimizador?</h1>
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="https://stackoverflow.com/users/218774/j-calleja">StackOverflow</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
