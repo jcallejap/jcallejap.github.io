@@ -1,5 +1,5 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre el optimizador
-Date: 2019-11-09 13:14
+Date: 2023-07-08
 Category: Iniciación C++
 Status: draft
 
@@ -15,7 +15,7 @@ No puede cambiar lo que hace tu código, pero sí puede cambiar cómo lo hace.
 
 El optimizador tiene permiso para hacer cambios mientras sea imposible diferenciar las salidas del programa original frente al optimizado.
 
-Por ejemplo, supongamos el siguiente código:
+Por ejemplo, en el siguiente código:
 
 ```
 int main()
@@ -35,18 +35,19 @@ El optimizador puede eliminar la variable a y generar un programa que únicament
 
 El optimizador puede hacer cambios en el código siempre que no cambie sus salidas.
 
-Se considera una salida cualquier dato que salga al exterior de la aplicación. Por ejemplo:
+Se considera una salida cualquier instrucción que tenga una comunicación con el exterior.
+Por ejemplo:
 
- - Imprimir un valor por consola.
- - Mostrar un valor en un interfaz gráfico.
- - Guardar un dato en disco.
- - Enviar un dato por red.
- - Activar un pin de una tarjeta de entradas/salidas digitales.
+- Imprimir un valor por consola.
+- Mostrar un valor en un interfaz gráfico.
+- Guardar un dato en disco.
+- Enviar un dato por red.
+- Activar un pin de una tarjeta de entradas/salidas digitales.
  
 De hecho, el conjunto de posibles salidas es tan amplio que se considera que cualquier función de la que no tiene el código fuente
 puede generar una salida y no se puede optimizar.
 
-Por ejemplo, el siguiente código:
+Por ejemplo, en el siguiente código:
 
 ```
 int main()
@@ -59,7 +60,8 @@ int main()
 }
 ```
 
-La variable a no se muestra, por lo que se puede eliminar. Si se elimina esta variable, se puede eliminar el bucle.
+La variable a no se muestra, por lo que se puede eliminar. 
+Si se elimina esta variable, se puede eliminar el bucle.
 Así pues, este programa no hace nada y el compilador puede generar un programa vacío que se ejecuta inmediatamente.
 
 Si añadimos un uso a la variable a:
@@ -79,18 +81,15 @@ int main()
 ```
 
 Ahora el optimizador no sabe si la función f(int) va a mostrar el dato que se le pasa.
-Sin embargo, un optimizador suficientemente bueno, se daria cuenta que a siempre vale 30000 al final del bucle.
+Sin embargo, un optimizador suficientemente bueno, se daria cuenta que el valor de ```a``` es siempre 30000 al final del bucle.
 Por lo tanto, podría  eliminar la variable, eliminar el bucle y generar un programa que sólo llama a la función con un argumento de 30000.
-
 
 
 # 3. ¿Qué tipo de cambios puede hacer?
 
 Se permite cualquier cambio siempre que se cumplan las restricciones anteriores.
 
-Por ejemplo:
-
-*Eliminar una variable*
+## Eliminar una variable
 
 ```
 int main()
@@ -103,9 +102,9 @@ int main()
 }
 ```
 
-La variable a se puede eliminar.
+La variable ```a``` se puede eliminar.
 
-*Reutilizar una variable*
+## Reutilizar una variable
 
 ```
 extern int f(int);
@@ -122,7 +121,7 @@ int main()
 
 Las variables a y b pueden ser la misma.
 
-*Reordenar código*
+## Reordenar código
 
 ```
 int main()
@@ -139,7 +138,7 @@ int main()
 }
 ```
 
-La variable a puede desaparecer para usar la constante 4.
+La variable ```a``` puede desaparecer para usar la constante 4.
 Eso hace que los if se puedan evaluar en tiempo de compilación y el código quedaría:
 
 ```
@@ -153,7 +152,7 @@ int main()
 ```
 
 
-*Inline functions*
+## Inline functions
 
 ```
 int f(int a) {return a + 1;}
@@ -178,7 +177,7 @@ int main()
 ```
 
 
-*Loop unrolling*
+## Loop unrolling
 
 ```
 int f(int a) {return a + 1;}
@@ -209,7 +208,7 @@ int main()
 ```
 
 
-*Compile time execution*
+## Compile time execution
 
 Parte del código se puede ejecutar en tiempo de compilación.
 
@@ -227,17 +226,11 @@ int main()
 ```
 
 
-
 # 4. ¿Cómo se relaciona con los benchmarks?
 
 Normalmente, uno de los parámetros que el optimizador intenta mejorar es el tiempo de ejecución. 
-Para ello, puede hacer modificaciones en el código que se puede medir, estropeando las mediciones.
-
-Por ejemplo, 
-
-,
-Para el optimizador, el código que se utiliza para leer tiempos no es diferente del código normal.
-Por lo tanto, es posible reordenarlo.
+Para ello, puede hacer modificaciones en el código que pueden hacer que el benchmark mejore su tiempo a costa de 
+modificar lo que queremos medir.
 
 Por ejemplo, tomemos el siguiente código que intenta medir el tiempo de la función ```f()```.
 
@@ -249,13 +242,15 @@ int main()
   for(int i=0;i<1000;++i) {
      f(a);
   }
-  std::cout << toc() << std::endl;
+  std::cout << toc()/1000 << std::endl;
  
   return 0;  
 }
 ```
 
 Por un lado, si el optimizador tiene acceso al código de la función f() y no tiene ningún efecto en la salida del programa, puede eliminar las llamadas a la función.
+Además, 
+
 
 
 
@@ -269,6 +264,8 @@ Por un lado, si el optimizador tiene acceso al código de la función f() y no t
 
 
 # 7. ¿Cómo puedo ayudar al optimizador?
+
+Existen diversas formas de ayudar al optimizador.
 
 
 
