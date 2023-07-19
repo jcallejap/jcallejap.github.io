@@ -37,7 +37,8 @@ Mientras que las siguientes ecuaciones no están en forma CNF:
   ab + c = 1
   (a+b)' = 1
   
-# 1. Uso de un SAT Solver en C++
+  
+# 1. SAT Solver en C++
 
 Existen [múltiples librerías](https://stackoverflow.com/q/41057441/218774) para resolver el problema SAT en C++.
 
@@ -85,23 +86,40 @@ D E F G
 ```
 
 
-## Ecuaciones horizontales y verticales
+## Ecauciones
 
-Las ecuaciones horizontales y verticales son las más sencillas.
-Únicamente tenemos que añadir que debe haber una y sólo una reina en cada fila o columna.
+Todas las ecuaciones son del tipo: "en este conjunto de casillas debe haber una y sólo una reina".
 
-Para ello, podemos usar las siguientes expresiones:
+Primero debemos localizar cuáles son los conjuntos de casillas donde sólo debe haber una línea:
 
-### Como mucho una variable de cada grupo es *true*
+- Filas: en cada fila del tablero sólo puede haber un *true*. 
+  Hay una fila de N elementos cada N casillas.
+- Columna: en cada columna del tablero sólo puede haber un *true*. 
+  Hay una columna de N elementos desde cada una de las casillas de 1 a N.
+- Diagonales: en cada diagonal del tablero sólo puede haber un *true*.
+  Hay dos tipos de diagonales. las que van de arriba-izquierda a abajo-derecha y las que van de arriba-derecha a abajo-izquierda.
+  
+Después, para cada conjunto, añadimos las siguientes ecuaciones:
 
-Esta condición no se puede expresar con una única ecuación, sino que es un conjunto de ecuaciones.
-Para cada pareja ai, aj, decir que ambas no pueden ser *true* implica que:
+**Tiene que haber al menos una variable a *true* **
+
+Esto se consigue con una sóla ecuación que incluye todas las variables.
+Por ejemplo, para la primera fila de un tablero 4x4:
+
+```
+a1 + a2 + a3 + a4 = 1
+```
+
+
+**No puede haber dos variables a *true* **
+
+Esto se consigue añadiendo una ecuación para todas las parejas de variables del grupo, del tipo:
 
 ```
 ai' + aj' = 1
 ```
 
-En el caso de la primera fia del tablero 4x4, tendríamos las siguientes ecuaciones:
+Por ejemplo, en el caso de la primera fia del tablero 4x4, tendríamos las siguientes ecuaciones:
 
 ```
 a1' + a2' = 1
@@ -112,25 +130,8 @@ a2' + a4' = 1
 a3' + a4' = 1
 ```
 
-Hay que resaltar que estas ecuaciones sólo impiden que más de una variable se active.
-No obliga a que no se active ninguna variable.
 
-
-### Al menos una variable es *true*
-
-Está ecuación es la más sencilla, basta con hacer OR de todas las variables que se necesiten.
-El resultado es que debe haber al menos una variable *true* entre ellas:
-
-Por ejemplo, la primera file del tablero 4x4 usaría la siguiente ecuación para que, al menos, una de las casillas contenga una reina:
-
-```
-a1 + a2 + a3 + a4 = 1
-```
-
-
-## Ecuaciones diagonales
-
-
+## Implementación de las ecuaciones en MiniSAT
 
 
 
