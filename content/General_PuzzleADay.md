@@ -25,3 +25,17 @@ Todas las piezas ocupan al menos un rectángulo de 2x3 casillas, por lo que no s
 De esta forma, podemos estimar que se podrán colocar en máximo de 200 posiciones ((6x5-6)x8).
 
 Cuando colocamos una pieza, queda menos espacio para las demás por lo que el área completa de búsqueda sería de 5.943.246.655.500.000.000:
+
+
+# 2. EMScripten
+
+Para instalar EMScripten:
+
+git clone https://github.com/emscripten-core/emsdk
+cd emsdk
+emsdk install latest
+
+Después, hay que abrir una ventana de comandos y teclear:
+
+emsdk activate latest
+emcc Solver\Solver.cpp PuzzleADaySolver\main.cpp -std=c++17 -O2 -o main.html -sSINGLE_FILE -sEXPORTED_FUNCTIONS=_solveAndShow,_main -sEXPORTED_RUNTIME_METHODS=ccall,cwrap --shell-file=EMS\base.html -sUSE_SDL=2
