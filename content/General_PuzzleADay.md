@@ -1,5 +1,5 @@
 Title: Resolver el Puzzle-A-Day para niños
-Date: 2023-25-08
+Date: 2023-08-25
 Category: Resolución de problemas en C++
 Status: draft
 
