@@ -1,7 +1,6 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre el optimizador
-Date: 2023-07-08
+Date: 2023-10-19
 Category: Iniciación C++
-Status: draft
 
 
 # 0. ¿Qué es el optimizador de C++?
@@ -88,6 +87,8 @@ Por lo tanto, podría  eliminar la variable, eliminar el bucle y generar un prog
 # 3. ¿Qué tipo de cambios puede hacer?
 
 Se permite cualquier cambio siempre que se cumplan las restricciones anteriores.
+
+A continuación, describimos algunos de los más comunes.
 
 ## Eliminar una variable
 
@@ -220,17 +221,18 @@ int main()
   for(int i=0;i<10;++i) {
     a *= 2;
   }
-
+  std::cout << a << std::endl;
   return 0;  
 }
 ```
+
+El valor de la variable a se puede calcular en tiempo de compilación y eliminar la variable.
 
 
 # 4. ¿Cómo se relaciona con los benchmarks?
 
 Normalmente, uno de los parámetros que el optimizador intenta mejorar es el tiempo de ejecución. 
-Para ello, puede hacer modificaciones en el código que pueden hacer que el benchmark mejore su tiempo a costa de 
-modificar lo que queremos medir.
+Para ello, puede hacer modificaciones en el código para mejorar el tiempo medido a costa de eliminar lo que queremos medir
 
 Por ejemplo, tomemos el siguiente código que intenta medir el tiempo de la función ```f()```.
 
@@ -248,18 +250,69 @@ int main()
 }
 ```
 
-Por un lado, si el optimizador tiene acceso al código de la función f() y no tiene ningún efecto en la salida del programa, puede eliminar las llamadas a la función.
-Además, 
-
-
+Si el optimizador tiene acceso al código de la función f() y no tiene ningún efecto en la salida del programa, puede eliminar las llamadas a la función.
+En este caso, parecería que la función ```f() ``` no tarda nada en ejecutarse.
 
 
 # 5. ¿Cómo se relaciona con el multi-hilo?
 
+El optimizador puede reorganizar el código, eliminar líneas y realizar multitud de cambios. 
+Por eso, cualquier suposición que se haga sobre cómo se comporta el programa dentro de un thread es inválida.
 
+Además, C++ considera las condiciones de carrera como comportamiento indefinido por lo que puede decidir ignorarlas.
+Es decir, el optimizador puede tener sólo en cuenta la función actual para realizar los cambios.
+No está obligado a mirar lo que hacen otras funciones salvo que se lo indiquemos de alguna manera.
+
+Por ejemplo, supongamos que tenemos dos funciones que se llaman en dos threads:
+
+```
+static int a = 0;
+
+static void func_1() 
+{
+  for(a=0;a<1000;++a);
+}
+
+static void func_2() 
+{
+  while(a < 1000) {
+    std::cout << a << std:endl ;
+  }
+}
+```
+
+Nos podemos preguntar, ¿alguna vez se imprimirá el valor de 500 en la pantalla? La respuesta es... tal vez. 
+
+El optimizador puede decidir eliminar el for de la primera función por una asignación.
+
+La segunda función puede ser más complicada de optimizar. 
+Puesto que el valor de ```a``` nunca cambia dentro de la función y sabemos que comienza en cero, el optimizador podría convertir la función en un bucle infinito
+invocando que cualquier otra opción sería una condición de carrera y eso es comportamiento indefinido.
+
+Por otro lado, los bucles infinitos están prohibidos en C++ por lo que podría echar un vistazo a la otra función y decidir que el programador 
+ya sabe que la variable ```a``` no va a ser cero. Por lo tanto, su valor es 1000.
+
+Es decir, el siguiente código es perfectamente compatible con el anterior al lanzar dos threads:
+
+```
+static int a = 0;
+
+static void func_1() 
+{
+  a = 1000;
+}
+
+static void func_2() 
+{
+}
+```
+
+Para solucionar el problema, deberíamos 
 
 
 # 6. ¿Cómo se relaciona con el comportamiento indefinido?
+
+En el punto anterior ya hemos visto algunas relaciones del optimizador con el comportamiento indefinido.
 
 
 
