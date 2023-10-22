@@ -1,5 +1,5 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre el optimizador
-Date: 2023-10-19
+Date: 2023-10-22
 Category: Iniciación C++
 
 
@@ -232,7 +232,7 @@ El valor de la variable a se puede calcular en tiempo de compilación y eliminar
 # 4. ¿Cómo se relaciona con los benchmarks?
 
 Normalmente, uno de los parámetros que el optimizador intenta mejorar es el tiempo de ejecución. 
-Para ello, puede hacer modificaciones en el código para mejorar el tiempo medido a costa de eliminar lo que queremos medir
+Para ello, puede hacer modificaciones en el código para mejorar el tiempo medido a costa de eliminar lo que queremos medir.
 
 Por ejemplo, tomemos el siguiente código que intenta medir el tiempo de la función ```f()```.
 
@@ -283,7 +283,7 @@ static void func_2()
 
 Nos podemos preguntar, ¿alguna vez se imprimirá el valor de 500 en la pantalla? La respuesta es... tal vez. 
 
-El optimizador puede decidir eliminar el for de la primera función por una asignación.
+El optimizador puede decidir eliminar el ```for``` de la primera función por una asignación.
 
 La segunda función puede ser más complicada de optimizar. 
 Puesto que el valor de ```a``` nunca cambia dentro de la función y sabemos que comienza en cero, el optimizador podría convertir la función en un bucle infinito
@@ -307,18 +307,62 @@ static void func_2()
 }
 ```
 
-Para solucionar el problema, deberíamos 
+Si lo analizamos, vemos que el compilador no ha hecho nada que no sea válido. 
+De hecho, si el primer hilo se adelantase al segundo nada más arrancar, pasaría exactamente lo que estamos viendo.
+
+
+Para solucionar el problema, es necesario dar pautas al compilador que le indiquen que las funciones se están llamando desde varios hilos.
+Por ejemplo, podemos declarar la variable ```a``` como [std::atomic_int](https://en.cppreference.com/w/cpp/atomic/atomic).
+
+De esta manera, tenemos varias ventajas:
+
+- Se permite la lectura y escritura simultánea desde dos threads distintos.
+- Establece una zona donde el compilador no puede optimizar el orden de las operaciones. 
+
+Existen muchos más elementos de sincronización, entre otros:
+
+- [fences](https://en.cppreference.com/w/cpp/atomic/atomic_thread_fence)
+- [std::mutex](https://en.cppreference.com/w/cpp/thread/mutex)
 
 
 # 6. ¿Cómo se relaciona con el comportamiento indefinido?
 
 En el punto anterior ya hemos visto algunas relaciones del optimizador con el comportamiento indefinido.
 
+En general, el optimizador utiliza el comportamiento indefinido en su beneficio, 
+de manera que si encuentra una estructura que lleva a comportamiento indefinido, genera las instrucciones optimas.
+
+El ejemplo clásico es:
+
+```
+void init(int *a)
+{
+  *a = 0;
+}
+```
+
+Obviamente, si llamamos a la función ```init``` con ```nullptr``` la aplicación fallará.
+Sin embargo, como es comportamiento indefinido de-referenciar un ```nullptr```, el optimizador puede ignorar el caso.
 
 
 # 7. ¿Cómo puedo ayudar al optimizador?
 
-Existen diversas formas de ayudar al optimizador.
+Los optimizadores se han vuelto tan complejos que mi consejo principal es escribir código lo más legible posible y no preocuparse por el optimizador salvo en casos críticos.
 
+Obviamente, esto no quita que nuestro código tenga que estar optimizado, pero no con vistas al optimizador, sino asegurando puntos como:
+
+- Usar el tipo de dato correcto para cada algoritmo. Por ejemplo, no usar std::map si std::unordered_map es suficiente.
+- Evitar copias innecesarias.
+- No reservar memoria en el *heap* si no es necesario.
+
+Hay que tener en cuenta que en muchos casos un uso correcto de la caché del procesador puede ser más beneficioso que un algoritmo intrincado para beneficiar al optimizador.
+
+Como caso curioso, en C++20 se han añadido los atributos [likely y unlikely](https://en.cppreference.com/w/cpp/language/attributes/likely) 
+que permiten definir qué parte de un código es más probable que se ejecute en una ramificación y permite al optimizador mejorar el resultado para esa rama.
+
+
+# Enlaces
+
+[C++ Performance Optimization: Best Practices](https://hackernoon.com/c-performance-optimization-best-practices)
 
 
