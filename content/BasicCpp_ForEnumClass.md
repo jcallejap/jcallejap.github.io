@@ -126,6 +126,7 @@ Si tomamos todo en consideración, la clase quedaría:
 
 ```
 #include <type_traits>
+#include <limits>
 
 template <typename TYPE, TYPE begin_val, TYPE end_val>
 class EnumClassIterator {
@@ -156,6 +157,9 @@ class EnumClassIterator {
 ```
 
 Podemos ver un ejemplo de su uso en el proyecto [PuzzleADaySolver](https://github.com/jcallejap/PuzzleADaySolver/blob/main/Solver/EnumClassIterator.h):
+
+Nos podemos preguntar si ambas soluciones son similares o el hecho de haber añadido más complejidad al código lo hace menos eficiente.
+Para ello, es posible ver ambas soluciones en [Compiler Explorer](https://godbolt.org/z/c88Y4WG4r) donde se observa que Visual Studio considera ambas funciones equivalentes.
 
 
 # 4. Enlaces interesantes
