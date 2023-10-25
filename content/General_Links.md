@@ -14,6 +14,7 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 
 [Sweden C++ blog list](https://swedencpp.se/blogs)
 [MC++ Blogs and news](https://www.modernescpp.com/#my-blog)
+[CPP Cheat sheets and infographics](https://hackingcpp.com/cpp/cheat_sheets.html)
 
 # Juegos
 
