@@ -13,7 +13,9 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 # C++
 
 [Sweden C++ blog list](https://swedencpp.se/blogs)
+
 [MC++ Blogs and news](https://www.modernescpp.com/#my-blog)
+
 [CPP Cheat sheets and infographics](https://hackingcpp.com/cpp/cheat_sheets.html)
 
 # Juegos
@@ -24,6 +26,11 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 # Animación por ordenador
 
 [How to use Free Mocap files for Animations in Blender](https://www.blendernation.com/2022/08/23/how-to-use-free-mocap-files-for-animations-in-blender/)
+
+
+# Generación de gráficos
+
+[How To Make Your Own Spooky Magic Eye Pictures (Autostereograms)](https://blog.demofox.org/2023/10/22/how-to-make-your-own-spooky-magic-eye-pictures-autostereograms/)
 
 
 # Programación de videojuegos
