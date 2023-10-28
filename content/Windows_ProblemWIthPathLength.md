@@ -20,6 +20,7 @@ Por ejemplo, las siguientes rutas indican:
 - C:Directorio\archivo.pdf	Ruta relativa desde el directorio actual de la unidad C.
 
 Los directorios con significados especiales son:
+
  - *..*: directorio anterior.
  - *.*: directorio actual.
 
@@ -58,7 +59,7 @@ Por ejemplo, se podría usar *\\?\C:\NombreDirectorioMuyLargo\NombreDeArchivoLar
 Sin embargo, no se puede usar este sistema para referirse a rutas de acceso relativas, que siguen teniendo la limitación de MAX_PATH caracteres.
 
 Existe un problema extra con este sistema. 
-A día de hoy, el módulo <filesystem> de la librería estándar de C++ que viene con el compilador de Microsoft no gestiona correctamente estos paths.
+A día de hoy, el módulo **filesystem** de la librería estándar de C++ que viene con el compilador de Microsoft no gestiona correctamente los paths con este prefijo.
 
 
 # Referencias
