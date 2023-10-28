@@ -1,7 +1,6 @@
 Title: Problema con la longitud de las rutas en Windows
-Date: 2019-11-09 13:14
+Date: 2023-10-28
 Category: Windows
-Status: draft
 
 
 # Los paths en Windows
