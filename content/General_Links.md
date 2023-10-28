@@ -18,6 +18,12 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 
 [CPP Cheat sheets and infographics](https://hackingcpp.com/cpp/cheat_sheets.html)
 
+
+# Programación general
+
+[Awesome Falsehood](https://github.com/kdeldycke/awesome-falsehood)
+
+
 # Juegos
 
 [Colocar eventos en orden cronológico](https://timeline.games/es/)
@@ -41,6 +47,4 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 # ChatGPT
 
 [Haz tu vida más fácil con estas 11 formas de usar ChatGPT en el día a día](https://david-delassus.medium.com/a-short-introduction-to-entity-component-system-in-c-with-entt-330b7def345b)
-
-
 
