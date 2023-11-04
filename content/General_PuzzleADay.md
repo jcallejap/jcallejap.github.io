@@ -1,41 +1,65 @@
 Title: Resolver el Puzzle-A-Day para niños
-Date: 2023-08-25
+Date: 2023-10-29
 Category: Resolución de problemas en C++
-Status: draft
 
 
 # 0. El puzzle
 
 Hace un tiempo, un compañero de trabajo me habló de un puzzle para niños que resultaba difícil de resolver. 
-Consta de un tablero y 8 piezas de diferentes formas. 
-Estas pizas pueden encajar sobre el tablero de manera que quedan dos huecos libres.
-El objetivo es colocar todas las piezas sobre el tablero de manera que los huecos libres estén sobre el día y el mes del año.
-Su nombre es Puzzle-A-Day y se puede podía jugar una versión online [aquí](https://mathigon.org/polypad/A62G5zIdDPthg).
+Consta de un tablero con los meses del año y los días del mes dibujados y 8 piezas de diferentes formas. 
+Estas piezas pueden encajar sobre el tablero de manera que quedan dos huecos libres.
+
+![BoardImage](../images/PuzzleADay_BoardWithPieces.png)
+
+El objetivo es colocar todas las piezas sobre el tablero de manera que los dos huecos libres queden sobre el mes y el día de la fecha actual.
+Su nombre es Puzzle-A-Day y se puede jugar una versión online [aquí](https://mathigon.org/polypad/A62G5zIdDPthg).
+
+Por ejemplo, si hoy fuera 17 de octubre, las piezas deberián colocarse de la siguiente manera:
+
+![BoardImage](../images/PuzzleADay_Oct17.png)
+
 
 # 1. Resolución
 
-Puesto que sólo hay 8 piezas, se puede plantear usar un algoritmo de backtracking.
-Vamos a calcular unos números generales jugando un poco con el emulador:
+En un principio, el problema parece complejo. 
+Hay 8 piezas, cada una se puede colocar de ocho maneras distintas en más de 20 posiciones del tablero.
 
-Podemos 
-Jugando 
+Sin embargo, cada vez que se coloca una pieza, las opciones para la siguiente se reducen drásticamente.
+Por ejemplo, si estamos probando la siguiente colocación de piezas:
 
-De forma general, el tablero está dentro de un cuadrado de 7x7 casillas, las pizas tienen un tamaño de 5 o 6 casillas y cada pieza puede colocarse de 8 formas distintas (cuatro giros y un espejo).
-Todas las piezas ocupan al menos un rectángulo de 2x3 casillas, por lo que no se pueden colocar en las esquinas.
-De esta forma, podemos estimar que se podrán colocar en máximo de 200 posiciones ((6x5-6)x8).
+![BoardImage](../images/PuzzleADay_WrongPos.png)
 
-Cuando colocamos una pieza, queda menos espacio para las demás por lo que el área completa de búsqueda sería de 5.943.246.655.500.000.000:
+Se observa que ya no hay hueco para el rectángulo azul, por lo que tendremos que cambiar de posición alguna de las piezas que ya hemos colocado.
+
+Por lo tanto, un posible proceso para resolver este problema sería ir colocando las piezas una a una de manera sistemática y, 
+si observamos que no vamos a llegar a una solución, dar marcha atrás y modificar la colocación anterior.
+Este algoritmo es conocido como [backtracking](https://en.wikipedia.org/wiki/Backtracking).
+En la práctica, es equivalente a probar todas las posibles combinaciones de piezas hasta encontrar la solución aunque de forma más eficiente.
+
+En nuestro caso, vamos a seguir los siguientes pasos:
+
+1. Localizar la siguiente casilla que queremos cubrir con una pieza.
+2. Buscar una pieza que cubra esa casilla.
+3. Si la encontramos, la colocamos y volvemos al paso 1.
+4. Si no la encontramos, hacemos una modificación a la última pieza que hemos colocado y volvemos al paso 2.
+   Si no existen más opciones para el paso anterior, modificamos la pieza de dos pasos atrás y volvemos al paso 2.
+
+Por ejemplo, para cubrir el 17 de octubre.
+
+1. La primera casilla que queremos cubrir es la que dice 'Jan'.
+2. Encontramos una pieza que puede cubrir esa casilla:
+   ![BoardImage](../images/PuzzleADay_Jan.png)
+3. La siguiente casilla a cubrir es la que dice 'May'
+4. Encontramos una pieza que puede cubrir esa casilla:
+   ![BoardImage](../images/PuzzleADay_JanMay.png)
+5. La siguiente casilla a cubrir es la que dice 'Jun'. 
+   Sin embargo, no hay ninguna pieza que pueda cubrirla.
+   Por lo tanto, quitamos la pieza anterior y ponemos otra:
+   ![BoardImage](../images/PuzzleADay_JanMay2.png)
+6. La siguiente casilla a cubrir es la que dice 'Aug'.
+7. Continuamos probando hasta dar con la solución.
 
 
-# 2. EMScripten
+# 3. Implementación en C++
 
-Para instalar EMScripten:
-
-git clone https://github.com/emscripten-core/emsdk
-cd emsdk
-emsdk install latest
-
-Después, hay que abrir una ventana de comandos y teclear:
-
-emsdk activate latest
-emcc Solver\Solver.cpp PuzzleADaySolver\main.cpp -std=c++17 -O2 -o main.html -sSINGLE_FILE -sEXPORTED_FUNCTIONS=_solveAndShow,_main -sEXPORTED_RUNTIME_METHODS=ccall,cwrap --shell-file=EMS\base.html -sUSE_SDL=2
+En el repositorio de [PuzzleADay](https://github.com/jcallejap/PuzzleADaySolver) hay una implementación del algoritmo de backtracking para resolver el problema.
