@@ -1,6 +1,7 @@
 Title: ¿Cómo iterar un enum class?
 Date: 2023-10-18
 Category: Resolución de problemas en C++
+Tags: C++
 
 
 # 0. Introducción al problema

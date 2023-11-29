@@ -3,7 +3,6 @@ Date: 2019-11-09 13:14
 Category: Iniciación C++
 Status: draft
 
-
 # 0. No existe el *texto plano*
 
 Para una persona, un texto es un conjunto de caracteres. 

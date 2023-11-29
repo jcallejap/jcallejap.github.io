@@ -1,7 +1,7 @@
 Title: Problema con la longitud de las rutas en Windows
 Date: 2023-10-28
 Category: Windows
-
+Tags: C++, Windows
 
 # Los paths en Windows
 

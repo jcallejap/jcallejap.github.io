@@ -1,6 +1,7 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre el comportamiento indefinido
 Date: 2023-07-04
 Category: Iniciación C++
+Tags: C++, UB
 
 
 # 0. ¿Qué  tipos de comportamiento hay en C++?

@@ -1,6 +1,7 @@
 Title: Usar Visual Studio con CMake y vcpkg
 Date: 2023-08-23
 Category: C++ General
+Tags: C++, Visual Studio
 Status: draft
 
 # Introducción

@@ -1,7 +1,7 @@
 Title: Resolver el Puzzle-A-Day para niños
 Date: 2023-10-29
 Category: Resolución de problemas en C++
-
+Tags: C++, Optimización
 
 # 0. El puzzle
 
