@@ -1,7 +1,7 @@
 Title: Crear un blog con Pelican en github
-Date: 2023-07-04
+Date: 2023-11-29
 Category: Blogs
-Status: draft
+Tags: Pelican, Blog
 
 
 # Introducción
@@ -12,17 +12,18 @@ Pelican es una aplicación desarrollada en Python para crear páginas web estát
 
 GitHub Pages es una utilidad de GitHub que permite alojar páginas web estáticas a partir de repositorios de GitHub.
 
-Para mantener el blog actualizado, tenemos un único repositorio con dos ramas:
+Para mantener el blog actualizado, tenemos un único repositorio con dos ramas independientes:
 
 * main: contiene los archivos fuente necesarios para generar el blog.
 * gh-pages: contiene los archivos del blog.
 
-Además, se ha creado una acción para regenerar la rama *gh-pages* cada vez que se sube un cambio a la rama *main*.
+Además, se ha creado una acción de GitHub que regenera la rama *gh-pages* cada vez que se sube un cambio a la rama *main*.
+De esta manera, para regenerar el sitio web basta con subir los archivos fuente en markdown a la rama *main* y, automáticamente, se regenerará el contenido y estará disponible coo.
 
 
-# Instalación de Pelican
+# Instalación de Pelican en local
 
-Los pasos para instalar Pelican son:
+Los pasos para instalar Pelican en un ordenador con Python ya instalado son:
 
 1. Instalar Python. En el momento de escribir este texto, estoy usando Python 3.11.4.
 1. Instalar Pelican en Python: ```python -m pip install "pelican[markdown]"```
@@ -44,15 +45,14 @@ Para crearlo, hay que seguir los siguientes pasos:
 1. Entrar dentro de las opciones de Pages y seleccionar:
     * Source: deploy from branch.
     * Branch: gh-pages/root
-
 1. Clonar el repositorio en local, usando ```git clone https://github.com/username/username.github.io```
 
 En vez de generar los archivos del blog en local y subirlos a GitHub, podemos crear una acción para regenerarlos automáticamente.
-Para ello, hay que crear un directorio *.github/workflows* dentro del repositorio y colocar un archivo.
+Para ello, hay que crear un directorio *.github/workflows* dentro del repositorio y colocar un archivo *yml* de configuración.
 
 Puedes ver un ejemplo en [pelican_blog.yml](https://github.com/jcallejap/jcallejap.github.io/blob/main/.github/workflows/pelican_blog.yml).
 
-Este ejemplo está basado en el repositorio de [nelsonjchen](https://github.com/nelsonjchen/gh-pages-pelican-action)
+Este ejemplo está basado en el [repositorio de nelsonjchen](https://github.com/nelsonjchen/gh-pages-pelican-action)
 
 
 # Creación de un proyecto de blog
@@ -73,11 +73,19 @@ Una vez creado el esqueleto, los artículos se escriben en formato Markdown dent
 
 Para generar el blog localmente, se utiliza ```pelican content```.
 
-Para visualizar el blog en local, se debe ejecutar: ```pelican --listen``` y abrir la página [local](http://localhost:8000/) con un navegador.
+Para visualizar el blog en local, se debe ejecutar: ```pelican  --autoreload --listen``` y abrir la página [local](http://localhost:8000/) con un navegador.
 
 
 # Temas
 
-Para listar los temas disponbiles basta con hacer:
-pelican-themes --lista
+En la página de [pelican-themes Preview](https://pelicanthemes.com/) se puede previsualizar los diferentes temas que están disponibles para Pelican.
+A su vez, el código fuente de estos temas se puede encontrar en [GitHub](https://github.com/getpelican/pelican-themes).
+
+La forma de añadir un tema es:
+
+1. Crear un submódulo con el repositorio donde está el código fuente del tema, por ejemplo ```git submodule add https://github.com/jcallejap/Flex```.
+   Puede ser interesante realizar un *fork* del tema en caso de que la licencia lo permita.
+   Por ejemplo, porque se quieran modificar las traducciones o el grafismo.
+1. Modificar el archivo *pelicanconf.py* para añadir la línea ```THEME = 'Flex'```.
+   Además, cada tema puede tener varias variables de configuración.
 
