@@ -12,6 +12,8 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 
 # C++
 
+[CPP Core Guidelines](https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines)
+
 [Sweden C++ blog list](https://swedencpp.se/blogs)
 
 [MC++ Blogs and news](https://www.modernescpp.com/#my-blog)
