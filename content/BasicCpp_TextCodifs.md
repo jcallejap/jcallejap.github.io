@@ -1,7 +1,6 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre la codificación de texto
-Date: 2019-11-09 13:14
+Date: 2023-12-17 13:14
 Category: Iniciación C++
-Status: draft
 
 # 0. No existe el *texto plano*, se necesita conocer la codificación
 
@@ -68,7 +67,7 @@ Cada idioma puede tener sus propias reglas para definir qué es una letra, por l
 
 Una vez hemos decidido un conjunto de letras diferenciadas, se le asigna un número a cada una, que llamaremos punto de código (code point). 
 Por ejemplo, la letra A tiene el número 41.
-Normalmente, se escribe como U+0041, donde U significa Unicode y después se indica el número en base 10.
+Normalmente, se escribe como U+0041, donde U significa Unicode y después se indica el número en base 16.
 
 Algunos de los puntos de código se consideran modificadores.
 Por ejemplo, hay un punto de código que indica que hay se añade un acento.
@@ -103,37 +102,99 @@ También se puede usar UTF-16, donde se utilizan 2 bytes para las letras de punt
 
 # 3. La libraría heredada de C está pensada para ASCII
 
-Todas las librerías antiguas de C asumían que la codificación del texto es ASCII, por lo que no pueden usarse de forma segura usando otra codificación.
+Todas las librerías heredadas de C asumen que la codificación del texto es ASCII por lo que, en general, no pueden usarse de forma segura usando otra codificación.
 
 Por ejemplo:
 
 - ```strlen``` asume que un byte a cero indica el final de la cadena pero en UTF-16 pueden aparecer fácilmente ceros en mitad de la cadena.
-  Si se usa UTF-8, no aparecen ceros extra, pero el número de caracteres no se corresponde con el número de bytes, ya que puede haber caracteres que empleen dos o más bytes.
-- ```strcmp``` realiza una comparación byte a byte de la cadena. 
+  Si se usa UTF-8, no aparecen ceros extra, pero ```strlen``` cuenta el número de bytes, no el número de caracteres ya que puede haber caracteres que empleen dos o más bytes.
+- ```strcmp``` realiza una comparación byte a byte de la cadena.  
   Sin embargo, si la cadena no está normalizada, dos textos idénticos pueden usar distintos bytes.
   
-Por lo tanto, es necesario usar funciones que sí estén preparadas para la codificación usada.
-
+Por lo tanto, es necesario usar funciones que sí estén preparadas para la codificación que se ha usado en el texto.
 
 
 # 4. Algunas codificaciones necesitan información extra para mostrar el texto
- - Byte order
- - Codepage
 
-# 5. Hay que indicar también la codificación de los archivos de texto
+Algunas codificciones necesitan información extra para poder decodificarse.
+Por ejemplo:
+
+- La codificación ISO 8859 necesita que se indique qué caracteres se almacenan en el grupo superior.
+  Si no se hace, no se puede decodificar el texto y podríamos terminar mostrando caracteres latinos cuando el texto necesita caracteres griegos.
+  No hay una forma estándar de indicar esta información en un archivo.
+- La codificación UTF-16 utiliza números de 16 bits como base. 
+  Estos números se almacenan como dos bytes, por lo que existen dos formas de guardar el número: LSB y MSB.
+  Para especificar cuál se está usando, existe un caracter de control de Unicode denominado [BOM](https://es.wikipedia.org/wiki/Marca_de_orden_de_bytes).
+  El BOM tiene como valor *U+FEFF*. El caracter *U+FFFE* no existe, por lo que si se encuentra este conjunto de bytes, podemos saber el orden. 
+ 
+Si guardamos un archivo de texto, tenemos que indicar la codificación en el propio archivo.
+Por ejemplo, para UTF-16, se suele guardar el BOM justo al principio del archivo.
+
+Algunos formatos también tienen un lugar donde especificar la codificación.
+Por ejemplo, en la cabecera de los archivos XML se puede especificar usando el parámetro encoding:
+
+```
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+```
+
+
+# 5. C++ no tuvo un tipo de dato para Unicode hasta C++11
+
+Originalmente, C++ tenía dos [tipos de datos](https://en.cppreference.com/w/cpp/language/types) para caracteres:
+
+- char
+- wchar_t
+
+El primero estaba pensado para ASCII y es el tipo de dato básico de C++, siendo su tamaño, generalmente, 1 byte.
+El segundo estaba pensado para *caracteres anchos* y, como muchos datos de C, no estaba completamente definido.
+Windows decidió que su tamaño fuese 2 bytes y lo empleó para UTF-16LE. 
+Linux, por el contrario le dio un tamaño de 4 bits.
+
+A partir de C++11, se hicieron algunos avances hacia una estandarización de los tipos de datos de las codificaciones, añadiendo:
+
+- ```char16_t``` para UTF-16.
+- ```char32_t``` paraUTF-32.
+- ```char8_t``` para UTF-8 (C++20, tardó en oficializarse porque originalmente se pensó en usar char para UTF-8).
+
+Estos nuevos tipos de datos también trajeron una ampliación en los [formatos de los literales](https://en.cppreference.com/w/cpp/language/character_literal).
 
 
 # 6. No todos los sistemas operativos tienen la misma codificación interna y eso importa
 
-Linux utiliza UTF-8 mientras que Windows suele usar UTF-16, aunque es posible cambiarlo en Windows 10.
+Linux utiliza UTF-8 mientras que Windows suele usar UTF-16 (aunque es posible cambiarlo en Windows 10, no se suele recomendar).
+Esto plantea un problema extra para escribir texto portable porque hay que tener en cuenta la codificación del texto que se pasa al interfaz.
+
+La tendencia actual es escribir todo el texto en UTF-8 y cambiar de codificación sólo cuando se va a interactuar con el sistema operativo.
+Existen algunas librerías para ayudarnos como [boost::nowide](https://www.boost.org/doc/libs/1_84_0/libs/nowide/doc/html/index.html).
+
+La introducción en C++17 de la librería [FileSystem](https://en.cppreference.com/w/cpp/filesystem) permitió también simplificar el hecho de que 
+Windows utiliza rutas de archivo en UTF-16 y Linux en UTF-8.
 
 
 # 7. La comparación de textos es mucho más complicada de lo que parece
 
+En los alfabetos latinos se establece un orden de los caracteres y después se ordenan las palabras según ese orden empezando por el primer caracter o los siguientes si los primeros coinciden.
+Este algoritmo, tan sencillo y conocido, tiene ya varios problemas al llevarlo a la práctica:
 
-# Referencias
+- ¿Influye que una letra sea mayúscula?
+- ¿Influye que una letra esté acentuada?
+- ¿Influye el país? (Por ejemplo, en España durante mucho tiempo la letra *ll* fue distinta a la *l*).
+- ¿Qué ocurre si se intercalan caracteres de otros alfabetos? Por ejemplo, los caracteres *@*, *&*, *$*.
+- ¿Cómo se ordenan los emojis?
+
+Por otro lado, existen sistemas de escritura más complicados que los latinos.
+Por ejemplo, los caracteres chinos se ordenan según el número de trazos necesarios para escribirlos.
+
+Esto hace que sea necesario definir reglas complejas para la comparación de textos.
+De esto se encarga el consorcio de [Unicode](https://es.wikipedia.org/wiki/Consorcio_Unicode) aunque la implementación de la norma depende del lenguaje de programación.
+
+
+# Referencias para saber más
 
 [The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)](https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/)
 
+[The Absolute Minimum Every Software Developer Must Know About Unicode in 2023 (Still No Excuses!)](https://tonsky.me/blog/unicode/)
+
 [Unicode FAQs](https://unicode.org/faq/basic_q.html)
 
+[UTF-8 Everywhere](https://utf8everywhere.org/)
