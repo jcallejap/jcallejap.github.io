@@ -13,7 +13,10 @@ OUTPUT_PATH = 'output/'
 
 # Theme related
 THEME = 'Flex'
-FAVICON = SITEURL + "/images/favicon.ico"
+SITELOGO = '/images/profile.png'
+FAVICON = '/images/favicon.ico'
+SITESUBTITLE = "Programación (principalmente) en C++"
+SITEDESCRIPTION = "Ejemplos de algoritmos, curiosidades, y cosas que voy descubriendo mientras desarrollo aplicaciones."
 I18N_TEMPLATES_LANG = "es"
 DEFAULT_LANG = "es"
 OG_LOCALE = "es_ES"
@@ -39,10 +42,9 @@ LINKS = (('Pelican', 'https://getpelican.com/'),
          ('Python.org', 'https://www.python.org/'),)
 
 # Social widget
-SOCIAL = (('StackOverflow', 'https://stackoverflow.com/users/218774/j-calleja'),)
-
-DEFAULT_PAGINATION = 4
+SOCIAL = (('StackOverflow', 'https://stackoverflow.com/users/218774/j-calleja'), ("github", "https://github.com/jcallejap"),)
 COPYRIGHT_YEAR = datetime.now().year
+DEFAULT_PAGINATION = 3
 
 # Uncomment following line if you want document-relative URLs when developing
 #RELATIVE_URLS = True
