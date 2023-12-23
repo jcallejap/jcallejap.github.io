@@ -2,6 +2,8 @@ Title: 8 cosas que todo programador de C++ debería saber sobre el optimizador
 Date: 2023-10-22
 Category: Iniciación C++
 Tags: C++
+Summary: Todo programador de C++ debe tener claras, al menos, estas 8 ideas sobre el optimizador.
+
 
 # 0. ¿Qué es el optimizador de C++?
 

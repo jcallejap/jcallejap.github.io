@@ -1,6 +1,9 @@
 Title: 8 cosas que todo programador de C++ debería saber sobre la codificación de texto
 Date: 2023-12-17 13:14
 Category: Iniciación C++
+Tags: C++, Unicode
+Summary: Dentro de la codificación de texto, hay 8 ideas que todo programador debe conocer...
+
 
 # 0. No existe el *texto plano*, se necesita conocer la codificación
 

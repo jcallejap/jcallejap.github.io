@@ -2,6 +2,8 @@ Title: Resolver el Puzzle-A-Day para niños
 Date: 2023-10-29
 Category: Resolución de problemas en C++
 Tags: C++, Optimización
+Summary: ¿Qué mejor manera de resolver un juego de niños que usar backtracking?
+
 
 # 0. El puzzle
 

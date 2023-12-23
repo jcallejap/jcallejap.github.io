@@ -2,6 +2,8 @@ Title: Problema con la longitud de las rutas en Windows
 Date: 2023-10-28
 Category: Windows
 Tags: C++, Windows
+Summary: Una ruta es el camino para llegar a un archivo pero, ¿qué límites tiene?
+
 
 # Los paths en Windows
 

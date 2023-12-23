@@ -1,7 +1,8 @@
 Title: Curiosidades de C++: usar la misma variable en dos bucles anidados
-Date: 2019-11-09 13:14
+Date: 2023-05-09 13:14
 Category: Curiosidades de C++
 Tags: C++
+Summary: El siguiente código parece incorrecto, pero... ¿lo es?
 
 # Pregunta
 

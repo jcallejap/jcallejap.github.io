@@ -2,6 +2,7 @@ Title: Crear un blog con Pelican en github
 Date: 2023-11-29
 Category: Blogs
 Tags: Pelican, Blog
+Summary: Si quieres saber cómo está hecho este blog, sigue leyendo...
 
 
 # Introducción

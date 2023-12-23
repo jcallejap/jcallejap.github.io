@@ -2,6 +2,7 @@ Title: Curiosidades de C++: operador flecha
 Date: 2023-06-24
 Category: Curiosidades de C++
 Tags: C++
+Summary: ¿Qué significa la línea ```while (x --> 0)```?
 
 La siguiente pregunta está tomada de StackOverflow, pero me ha parecido curiosa:
 [What is the '-->' operator in C/C++?](https://stackoverflow.com/q/1642028/218774)

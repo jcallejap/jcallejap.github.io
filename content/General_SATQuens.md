@@ -2,6 +2,7 @@ Title: Usar SAT Solver para resolver el problema de las N reinas.
 Date: 2023-11-25
 Category: Resolución de problemas en C++
 Tags: C++, Optimización
+Summary: Dentro de las múltiples formas de resolver el problema de las N-Reinas, usar un SAT-Solver es una de las menos usadas.
 
 
 # 0. Qué es un SAT Solver
