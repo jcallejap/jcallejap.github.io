@@ -22,7 +22,7 @@ Es cierto que hay algunas codificaciones que se toman por defecto.
 Por ejemplo, en ausencia de otra información, podemos suponer que el texto está en ASCII.
 Si estamos usando Linux, podemos pensar que la codificación es UTF-8 o, en el caso de Windows, UTF-16.
 Pero esto no significa que no necesitamos la codificación. 
-Sólo que podemos *adivinar* cual estamos usando.
+Sólo que podemos *adivinar* cuál estamos usando.
 
 
 # 1. Existen muchos tipos de codificaciones
@@ -91,14 +91,14 @@ Sin embargo, esto presenta varios problemas:
   Podría parecer un desperdicio de espacio.
 - Hay arquitecturas que escriben los números como LSB o HSB, por lo que habría que especificar la arquitectura.
 
-Otra opción es utilizar una cierta compresión, donde se utilice sólo 7 bits de 1 byte para los códigos pequeños y usar más bytes para letras de mayor punto de código.
+Otra opción es utilizar una cierta compresión, donde se utilice 1 byte para las primeras letras y más bytes para las que tienen un punto de código mayor.
 Este formato se denomina UTF-8. 
 Sus principales ventajas son:
 
 - Los textos de alfabetos latinos ocupan menos espacio que en UTF-32.
 - No es necesario especificar si es LSB o HSB.
 
-Mientras que su principal desventaja es que es más complicado de decodificar porque cada letra ahora tiene un tamaño variable en función de su punto de código.
+Su principal desventaja es que es más complicado de decodificar porque cada letra ahora tiene un tamaño variable en función de su punto de código.
 
 También se puede usar UTF-16, donde se utilizan 2 bytes para las letras de puntos pequeños y 4 para las mayores. 
 
