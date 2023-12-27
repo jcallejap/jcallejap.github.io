@@ -21,6 +21,15 @@ I18N_TEMPLATES_LANG = "es"
 DEFAULT_LANG = "es"
 OG_LOCALE = "es_ES"
 LOCALE = "es_ES"
+BROWSER_COLOR = '#333333'
+
+# License
+CC_LICENSE = {
+    "name": "Creative Commons Attribution-ShareAlike",
+    "version": "4.0",
+    "slug": "by-sa",
+    "local_icons": True,
+}
 
 # Main Menu
 MAIN_MENU = True
@@ -38,11 +47,10 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Pelican', 'https://getpelican.com/'),
-         ('Python.org', 'https://www.python.org/'),)
+LINKS = (('Pelican', 'https://getpelican.com/'),('Python.org', 'https://www.python.org/'),)
 
 # Social widget
-SOCIAL = (('StackOverflow', 'https://stackoverflow.com/users/218774/j-calleja'), ("github", "https://github.com/jcallejap"),)
+SOCIAL = (('stack-overflow', 'https://stackoverflow.com/users/218774/j-calleja'), ("github", "https://github.com/jcallejap"),)
 COPYRIGHT_YEAR = datetime.now().year
 DEFAULT_PAGINATION = 3
 
