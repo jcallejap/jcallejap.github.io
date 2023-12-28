@@ -17,17 +17,17 @@ Como primer punto, conviene recordar cómo se contruyen la ruta de un archivo en
 Cada uno de estos puntos es opcional.
 Por ejemplo, las siguientes rutas indican:
 
-- Directorio\archivo.pdf	Ruta relativa desde el directorio actual.
-- C:\Directorio\archivo.pdf	Ruta absoluta desde el raíz de la unidad C.
-- C:Directorio\archivo.pdf	Ruta relativa desde el directorio actual de la unidad C.
+- **Directorio\archivo.pdf**: Ruta relativa desde el directorio actual.
+- **C:\Directorio\archivo.pdf**: Ruta absoluta desde el raíz de la unidad C.
+- **C:Directorio\archivo.pdf**: Ruta relativa desde el directorio actual de la unidad C.
 
 Los directorios con significados especiales son:
 
- - *..*: directorio anterior.
- - *.*: directorio actual.
+ - **..**: directorio anterior.
+ - **.**: directorio actual.
 
 
-# El límite de tamaño
+# El límite de tamaño de ruta
 
 En las ediciones de Windows anteriores a Windows 10 versión 1607
 el tamaño máximo de la ruta que se puede pasar a una función de Windows es de MAX_PATH, 
@@ -50,13 +50,15 @@ Son necesarias dos condiciones para que una aplicación pueda usarlas:
 - La clave *Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled*del Registro debe existir y establecerse en 1.
 - El manifiesto de aplicación también debe incluir el elemento *ws2:longPathAware*.
 
-Si se cumplen estas dos condiciones, muchas de las funciones del API de Windows pierden la limitación a 260 caracteres.
+Si se cumplen estas dos condiciones, muchas de las funciones del API de Windows pierden la limitación de 260 caracteres.
 
 
 # Solución usando rutas extendidas
 
 Las versiones de Unicode del API de Windows admiten rutas de hasta 32676 caracteres, pero éstas deben empezar por el prefijo *"\\?\"*.
-Por ejemplo, se podría usar *\\?\C:\NombreDirectorioMuyLargo\NombreDeArchivoLargo*.
+Por ejemplo, se podría usar:
+
+*\\?\C:\NombreDirectorioMuyLargo\NombreDeArchivoLargo*.
 
 Sin embargo, no se puede usar este sistema para referirse a rutas de acceso relativas, que siguen teniendo la limitación de MAX_PATH caracteres.
 

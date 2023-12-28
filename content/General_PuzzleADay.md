@@ -65,3 +65,4 @@ Por ejemplo, para cubrir el 17 de octubre.
 # 3. Implementación en C++
 
 En el repositorio de [PuzzleADay](https://github.com/jcallejap/PuzzleADaySolver) hay una implementación del algoritmo de backtracking para resolver el problema.
+También se puede ver una demonstración online [aquí](https://jcallejap.github.io/PuzzleADaySolver/example.html).

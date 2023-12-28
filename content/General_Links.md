@@ -32,6 +32,7 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 
 [Colocar eventos en orden cronológico](https://timeline.games/es/)
 
+[Explordle](https://explordle.com/es)
 
 # Animación por ordenador
 
@@ -41,6 +42,12 @@ Estos son algunos links que me han parecido interesantes a lo largo del tiempo.
 # Generación de gráficos
 
 [How To Make Your Own Spooky Magic Eye Pictures (Autostereograms)](https://blog.demofox.org/2023/10/22/how-to-make-your-own-spooky-magic-eye-pictures-autostereograms/)
+
+[NMKD Stable Diffusion GUI](https://github.com/n00mkrad/text2image-gui)
+
+[ImaginAIry](https://github.com/brycedrennan/imaginAIry)
+
+[Stable Diffusion web UI](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
 
 
 # Programación de videojuegos

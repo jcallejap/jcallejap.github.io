@@ -34,7 +34,7 @@ no compila porque los ```enum class``` no se convierten automáticamente a un en
 # 1. Solución rápida
 
 
-La solución más sencilla es iterar directamente sobre los valores iniciales y finales.
+La solución más rápida y problemática es iterar directamente sobre los valores iniciales y finales.
 Algo parecido al código anterior pero añadiendo las conversiones:
 
 ```
@@ -67,13 +67,14 @@ for(int i=static_cast<int>(MyEnumeration::BEGIN);i<=static_cast<int>(MyEnumerati
 }
 ```
 
-La línea sigue siendo muy larga, pero la información sobre el comienzo y el final están incluidas dentro de la propia definición.
+La línea sigue siendo muy larga, pero la información sobre el comienzo y el final están incluidas dentro de la propia definición
+(aunque no el tipo de dato interno de la enumeración).
 De esta forma, si se modifican los valores del enum, es fácil ver que también hay que modificar el comienzo y el final.
 
 
 # 3. Crear una clase para iterar
 
-Una solución algo más complicada consiste en crear una clase para iterar enumeradores.
+Una solución algo más complicada (pero mejor a medio plazo) consiste en crear una clase para iterar enumeradores.
 El objetivo es incluir esta clase en una cabecera para poder reusarla y añadir la forma del iterador junto a la declaración.
 
 ```

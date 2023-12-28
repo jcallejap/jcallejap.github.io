@@ -31,13 +31,13 @@ Por ejemplo, si usamos la siguiente nomenclatura:
 
 Las siguientes ecuaciones estarían en forma CNF:
 
-  a + b + c = 1
-  a + b' + c = 1
+- a + b + c = 1
+- a + b' + c = 1
   
 Mientras que las siguientes ecuaciones no están en forma CNF:
  
-  (a' * b' * c')' = 1
-  (a + b)' = 1
+- (a' * b' * c')' = 1
+- (a + b)' = 1
   
   
 # 1. SAT Solver en C++
@@ -76,22 +76,22 @@ Internalmente, las variables son únicamente un índice, de cero al número de v
 Por lo tanto, aunque esta función devuelve un objeto de tipo ```Var```, no es estrictamente obligatorio almacenarlo porque es sencillo referenciar una variable usando su índice con el método ```mkLit```.
 
 En nuestro caso, vamos a crear dos variables:
-```
+
+``` C++
   solver.newVar();
   solver.newVar();
-}
 ```
 
 El tercer paso es crear las ecuaciones. 
 Como deben estar en formato CNF, una ecuación es únicamente un vector de variables, algunas de las cuales podrían estar negadas.
 Por ello, podemos usar el vector ```Minisat::vec<Minisat::Lit>``` para almacenar una ecuación.
-Antes de introducir una variable en el vector, modemos modificarla con el operador ```~``` para indicar que está negada.
+Antes de introducir una variable en el vector, podemos modificarla con el operador ```~``` para indicar que está negada.
 
 Para añadir la ecuación a nuestro objeto, usamos el método ```addClause```, al que podemos pasar uno, dos, tres literales o un vector.
 
 En el ejemplo, queremos crear dos ecuaciones, por lo que podemos hacer:
 
-```
+``` C++
 //  v0 + v1' = 1
 solver.addClause(Minisat::mkLit(0), ~Minisat::mkLit(1));
 //  v0' = 1
@@ -184,7 +184,7 @@ a3' + a4' = 1
 
 Se consigue usando usando las ecuaciones anteriores. 
 El primer grupo indica que hay al menos una y el segundo que no hay más de una.
-Por lo tanto, si unimos ambos grupos de ecuaciones conseguiremos que sólo aparezca una y sólo una variable activa en cada grupo.
+Por lo tanto, si unimos ambos grupos de ecuaciones conseguiremos que aparezca una y sólo una variable activa en cada grupo.
 
 Por ejemplo, para la primera columna del tablero 4x4, deberíamos añadir:
 
@@ -211,7 +211,7 @@ Después, para cada conjunto, añadimos las ecuaciones descritas anteriormente.
 
 ### Crecimiento del número de ecuaciones
 
-Una forma de ver la complijidad del problema, es calcular el número de ecuaciones que aparecen.
+Una forma de ver la complijidad del problema es calcular el número de ecuaciones que se necesitan.
 
 Para una tablero de tamaño N, tendremos los siguientes grupos:
 
@@ -224,8 +224,8 @@ Total de grupos: N + N + 2(2N-3) = 6N - 6
 Cada grupo tiene *(1 + N(N - 1))* ecuaciones.
 Por lo tanto, el número final de ecuaciones sería: (6N - 6)(1 + N(N - 1)) = 6N^3 - 12N^2 + 6N
 
-Es decir, el número de ecuaciones crece de manera cúbica con el tamaño del tablero y por lo que podemos esperar que el tiempo de resolución crezca de manera similar.
-
+Es decir, el número de ecuaciones crece de manera cúbica con el tamaño del tablero 
+por lo que podemos esperar que el tiempo de resolución crezca de manera similar.
 
 
 ## Implementación de las ecuaciones en MiniSAT
@@ -235,13 +235,13 @@ luego generar los grupos necesarios para el tablero.
 
 Si tenemos las variables de un grupo dentro de un ```Minisat::vec<Minisat::Lit>``` llamado ```literals```, las ecuaciones quedarían:
 
-Tiene que haber al menos una variable a *true*: 
-
-```solver.addClause(literals)```
-
-No puede haber dos variables a *true*:
-
+- Tiene que haber al menos una variable a *true*: 
+``` C++
+solver.addClause(literals)
 ```
+
+- No puede haber dos variables a *true*:
+``` C++
 for (int i = 0; i < literals.size(); ++i) {
   for (int j = i + 1; j < literals.size(); ++j) {
     solver.addClause(~literals[i], ~literals[j]);

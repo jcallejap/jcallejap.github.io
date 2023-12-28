@@ -16,15 +16,16 @@ GitHub Pages es una utilidad de GitHub que permite alojar páginas web estática
 Para mantener el blog actualizado, tenemos un único repositorio con dos ramas independientes:
 
 * main: contiene los archivos fuente necesarios para generar el blog.
-* gh-pages: contiene los archivos del blog.
+* gh-pages: contiene los archivos generados del blog.
 
 Además, se ha creado una acción de GitHub que regenera la rama *gh-pages* cada vez que se sube un cambio a la rama *main*.
-De esta manera, para regenerar el sitio web basta con subir los archivos fuente en markdown a la rama *main* y, automáticamente, se regenerará el contenido y estará disponible coo.
+De esta manera, para regenerar el sitio web basta con subir los archivos fuente en markdown a la rama *main* y, automáticamente, se regenerará el contenido.
+Una segunda acción sube el contenido del blog a GitHub Pages para que esté disponible.
 
 
 # Instalación de Pelican en local
 
-Los pasos para instalar Pelican en un ordenador con Python ya instalado son:
+Los pasos para instalar Pelican en un ordenador son:
 
 1. Instalar Python. En el momento de escribir este texto, estoy usando Python 3.11.4.
 1. Instalar Pelican en Python: ```python -m pip install "pelican[markdown]"```
@@ -41,7 +42,7 @@ Sin embargo, hay un repositorio especial que sirve como presentación del perfil
 Para crearlo, hay que seguir los siguientes pasos:
 
 1. Crear un repositorio en GibHub con el nombre *username.github.io* donde username es nuestro nombre de usuario.
-1. Crear una rama *gh-pages*.
+1. Crear una segunda rama *gh-pages*.
 1. Abrir las opciones del repositorio.
 1. Entrar dentro de las opciones de Pages y seleccionar:
     * Source: deploy from branch.

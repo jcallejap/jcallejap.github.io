@@ -9,10 +9,10 @@ Summary: El comportamiento indefinido nos acecha en todo momento pero, ¿qué es
 
 El estándard C++ define cuatro tipos de comportamiento:
 
- - Comportamiento definido: la ejecución del programa es completamente predecible.
- - Comportamiento definido por la implementación (implementation-defined behavior): la ejecución es predecible, pero depende del compilador o del entorno dentro de ciertos márgenes y estas variaciones deben estar documentadas.  Por ejemplo, el valor de ```sizeof(int)```.
- - Comportamiento no especificado (unspecified behavior): la ejecución no es predecible pero está dentro de ciertas opciones. Por ejemplo, el orden de evaluación de los argumentos de una función.
- - Comportamiento sin definir (undefined behavior): la ejecución no es predecible y puede suceder cualquier cosa.
+- Comportamiento definido: la ejecución del programa es completamente predecible.
+- Comportamiento definido por la implementación (implementation-defined behavior): la ejecución es predecible, pero depende del compilador o del entorno dentro de ciertos márgenes y estas variaciones deben estar documentadas.  Por ejemplo, el valor de ```sizeof(int)```.
+- Comportamiento no especificado (unspecified behavior): la ejecución no es predecible pero está dentro de ciertas opciones. Por ejemplo, el orden de evaluación de los argumentos de una función.
+- Comportamiento sin definir (undefined behavior): la ejecución no es predecible.
 
 Por otro lado, dentro de esos comportamientos, el compilador puede encontrar tres tipos de construcciones:
 
@@ -32,10 +32,10 @@ Posibles opciones son:
 - Comportarse de forma esperada.
 - Hacer fallar la aplicación.
 - Hacer fallar la aplicación un tiempo después.
-- Hacer fallar la aplicaicón un tiempo antes.
+- Hacer fallar la aplicación un tiempo antes.
 - [Hacer que salgan demonios de tu nariz](http://catb.org/jargon/html/N/nasal-demons.html).
 
-Hay que tener en cuenta que cuando un programa pasa por comportamiento indefinido todo el programa es indefinido.
+Es importante entender que cuando un programa pasa por comportamiento indefinido, todo el programa es indefinido.
 Es decir, la aplicación podría fallar antes de pasar por la línea donde ocurre.
 
 Por ejemplo, queremos saber qué hace el siguiente código:
@@ -58,7 +58,7 @@ También podría ser que el optimizador mueva la llamada de la función a otro p
 
 Si seguimos pensando, se nos pueden ocurrir otros escenarios, como que ```fa()``` sea una función virtual y, al ser inválido el objeto, el punto de ejecución salte a una zona de memoria aleatoria.
 
-Lo importante es recordar que no hay ninguna limitación a lo que puede pasar. Incluso puede que el comportamiento cada vez que compilemos.
+Lo importante es recordar que no hay ninguna limitación a lo que puede pasar. Incluso puede que el comportamiento cambie cada vez que compilemos.
 
 
 #2 ¿Por qué existe el comportamiento indefinido?
@@ -90,9 +90,9 @@ Tal vez el programador sepa que g() nunca retorna porque siempre lanza una excep
 Pero el compilador no lo sabe y tiene que decidir qué hacer. Aquí se encuentra un problema:
 
  - Si el estándar definiese el comportamiento, le obligaría a añadir código que nunca se va a usar.
- - Si no se define, podría pasar cualquier cosa.
+ - Si no se define, es el compilador el que decide en cada compilación.
 
-Así pues, el estándard no indica qué debe pasar y el desarrollador del compilador puede hacer lo que más le convenga para su plataforma.
+Así pues, el estándard opta por la segunda opción y el desarrollador del compilador puede hacer lo que más le convenga para su plataforma.
 
 
 #3 ¿Por qué es tan peligroso el comportamiento indefinido?
@@ -106,10 +106,13 @@ Los motivos son varios, aunque los dos principales son:
    De hecho, muchos errores de seguridad se basan en el comportamiento indefinido de C o C++.
    
  - Cuando hay un comportamiento indefinido, es muy difícil depurar el error.
-   Hay que entender que, si se da un comportamiento indefinido, todo el programa es indefinido.
+   Como hemos dicho antes, si se da un comportamiento indefinido, todo el programa es indefinido.
    Por lo que el error puede darse en la línea problemática o podría comportarse según lo esperado durante un tiempo y fallar más adelante.
-   Por ejemplo, una vez tuvimos un programa que violaba la ODR (más sencillo de lo que parece al usar templates) y
-   la aplicación fallaba nada más arrancar a pesar de que no se había llamado todavía a la función problemática.
+   
+Por destacar algunos problemas que he visto en primera persona:
+
+- Un programa que violaba la ODR (más sencillo de lo que parece al usar templates) y la aplicación fallaba nada más arrancar a pesar de que no se había llamado todavía a la función problemática.
+- Un programa que tenía un buffer de memoria demasiado pequeño y se corrompía la memoria. Se borraba así un '\0' que indicaba un final de cadena y luego imprimía varios textos de otra parte del programa.
 
 De hecho, el comportamiento indefinido es una de las mayores quejas de los programadores de C++ y, a la vez, 
 lo que le da a C++ la capacidad de generar código optimizado en muchas arquitecturas.
@@ -136,7 +139,7 @@ void f(T *object)
 }
 ```
 
-Si object es nulo, el programa es indefinido.
+Si ```object``` es nulo, el programa es indefinido.
 
 En estos casos, para detectarlo, habría que añadir instrucciones que comprobasen que la variable no es nula. 
 Si el programador ya sabe que nunca lo será, se está penalizando la ejecución.
@@ -159,7 +162,7 @@ En este caso, es comportamiento indefinido si ```a``` es nulo.
 
 Existen varias formas de defenderse de este comportamiento. 
 La más directa es comprobar el valor del puntero antes de usarlo.
-Si creemos que nunca debería ser nulo, podemos poner un assert al principio de la función para que también muestre un error en debug:
+Si creemos que nunca debería ser nulo, podemos poner un ```assert``` al principio de la función para que también muestre un error en debug:
 
 ```
 void f(const A* a)
@@ -193,14 +196,14 @@ double f(int index)
 }
 ```
 
-Dependiendo del programa, sería conveniente discutir qué debe ocurrir si el valor de index es incorrecto.
+Dependiendo del caso, sería conveniente discutir qué debe ocurrir si el valor de index es incorrecto.
 Por ejemplo, podríamos devolver un valor por defecto o lanzar una excepción.
 
 
 ## Acceder a memoria sin inicializar
 
 ```
-bool f(int index)
+bool f()
 {
   int a;
   
@@ -252,11 +255,26 @@ bool foo(unsigned int x)
 ```
 
 El compilador tiene que añadir código para gestionar el desbordamiento y puede resultar más lenta que la anterior.
+Esto se puede comprobar con [Compiler Explorer](https://godbolt.org/#g:!((g:!((g:!((h:codeEditor,i:(filename:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,selection:(endColumn:16,endLineNumber:6,positionColumn:16,positionLineNumber:6,selectionStartColumn:16,selectionStartLineNumber:6,startColumn:16,startLineNumber:6),source:'bool+foo(unsigned+int+x)%0A%7B%0A++return+x+%2B+1+%3E+x%3B%0A%7D%0A%0Abool+foo(signed+int+x)%0A%7B%0A++return+x+%2B+1+%3E+x%3B%0A%7D%0A%0A'),l:'5',n:'0',o:'C%2B%2B+source+%231',t:'0')),k:45.42606722357429,l:'4',n:'0',o:'',s:0,t:'0'),(g:!((g:!((h:compiler,i:(compiler:g132,filters:(b:'0',binary:'1',binaryObject:'1',commentOnly:'0',debugCalls:'1',demangle:'0',directives:'0',execute:'0',intel:'0',libraryCode:'0',trim:'1'),flagsViewOpen:'1',fontScale:14,fontUsePx:'0',j:1,lang:c%2B%2B,libs:!(),options:'-std%3Dc%2B%2B17+-Wall+-O4',overrides:!(),selection:(endColumn:1,endLineNumber:1,positionColumn:1,positionLineNumber:1,selectionStartColumn:1,selectionStartLineNumber:1,startColumn:1,startLineNumber:1),source:1),l:'5',n:'0',o:'+x86-64+gcc+13.2+(Editor+%231)',t:'0')),k:26.606683804627252,l:'4',m:60.28202115158637,n:'0',o:'',s:0,t:'0'),(g:!((h:output,i:(editorid:1,fontScale:14,fontUsePx:'0',j:1,wrap:'1'),l:'5',n:'0',o:'Output+of+x86-64+gcc+13.2+(Compiler+%231)',t:'0')),header:(),l:'4',m:39.71797884841363,n:'0',o:'',s:0,t:'0')),k:54.57393277642571,l:'3',n:'0',o:'',t:'0')),l:'2',n:'0',o:'',t:'0')),version:4)
 
+El ensamblador de las funciones con y sin signo es:
+
+```
+foo(unsigned int):
+        cmp     edi, -1
+        setne   al
+        ret
+foo(int):
+        mov     eax, 1
+        ret
+```
+
+La primera función, al ser el comportamiento definido, tiene que comprobar el caso en el que ocurre el desbordamiento.
+La segunda función, por el contrario, siempre devuelve ```true```.
 
 ## Violación de la ODR
 
-La ODR indica que un elemento puede ser definido una única vez o, en caso de hacerlo varias veces (por ejemplo si está en un archivo de cabecera),
+La ODR indica que un elemento sólo puede ser definido una única vez o, en caso de hacerlo varias veces (por ejemplo si está en un archivo de cabecera),
 las definiciones deben ser idénticas.
 
 Normalmente, cuando se incumple esta regla, el linker puede detectarlo y emite un mensaje.
@@ -328,6 +346,7 @@ En la primera línea de la función se usa el puntero:
   - Si el puntero es nulo puedo hacer lo que quiera porque es comportamiento indefinido, así que hago lo mismo que en el caso anterior.
   
 En la segunda línea, la comprobación se ha vuelto redundante porque hemos definido que el puntero no es nulo, así que se puede eliminar.
+Además, la variable ```a``` no se usa, por lo que se puede eliminar la dereferencia del puntero.
 De esta manera, la función f siempre devuelve cero y quedaría:
 
 ```
@@ -343,8 +362,13 @@ int f(int *number)
 # Referencias
 
 [Difference between Undefined Behavior and Ill-formed, no diagnostic message required](https://stackoverflow.com/q/22180312/218774)
+
 [https://en.cppreference.com/w/c/language/behavior](https://stackoverflow.com/q/2397984/218774)
+
 [C99 List of Undefined Behavior](https://gist.github.com/Earnestly/7c903f481ff9d29a3dd1)
+
 [CUndefined behavior](https://en.cppreference.com/w/c/language/behavior)
+
 [A Guide to Undefined Behavior in C and C++](https://blog.regehr.org/archives/213)
+
 [The One-Definition Rule](https://akrzemi1.wordpress.com/2016/11/28/the-one-definition-rule/)

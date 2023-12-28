@@ -31,4 +31,4 @@ Es posible crear dos variables con el mismo nombre si están en un *scope* difer
 
 Por otro lado, cada bucle *for* crea un nuevo *scope* para su variable interna.
 
-Por lo tanto, en el ejemplo, tenemos dos scopes independientes: uno para cada *for* y en cada uno hay una variable ```i``` declarada.
+Por lo tanto, en el ejemplo, tenemos dos scopes independientes: uno para cada *for* y en cada uno hay una variable ```i``` distinta declarada.

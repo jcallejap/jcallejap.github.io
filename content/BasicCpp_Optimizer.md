@@ -18,7 +18,7 @@ El optimizador tiene permiso para hacer cambios mientras sea imposible diferenci
 
 Por ejemplo, en el siguiente código:
 
-```
+``` C++
 int main()
 {
   int a = 3;
@@ -50,7 +50,7 @@ puede generar una salida y no se puede optimizar.
 
 Por ejemplo, en el siguiente código:
 
-```
+``` C++
 int main()
 {
   int a = 0;
@@ -67,7 +67,7 @@ Así pues, este programa no hace nada y el compilador puede generar un programa 
 
 Si añadimos un uso a la variable a:
 
-```
+``` C++
 extern void f(int);
 
 int main()
@@ -94,7 +94,7 @@ A continuación, describimos algunos de los más comunes.
 
 ## Eliminar una variable
 
-```
+``` C++
 int main()
 {
   int a = 3;
@@ -109,7 +109,7 @@ La variable ```a``` se puede eliminar.
 
 ## Reutilizar una variable
 
-```
+``` C++
 extern int f(int);
 int main()
 {
@@ -124,14 +124,14 @@ int main()
 
 Las variables a y b pueden ser la misma.
 
-## Reordenar código
+## Eliminar código
 
-```
+``` C++
 int main()
 {
   int a = 4;
   if(a > 1) {
-    std::cout << "Hello" << std::endl;
+    std::cout << "Hello ";
   }
   if(a > 1) {
     std::cout << "World" << std::endl;
@@ -144,12 +144,39 @@ int main()
 La variable ```a``` puede desaparecer para usar la constante 4.
 Eso hace que los if se puedan evaluar en tiempo de compilación y el código quedaría:
 
-```
+``` C++
 int main()
 {
-  std::cout << "Hello" << std::endl;
-  std::cout << "World" << std::endl;
+  std::cout << "Hello ";
+  std::cout << "world" << std::endl;
   
+  return 0;  
+}
+```
+
+## Reordenar código
+
+``` C++
+int main()
+{
+  int a = 4;
+  std::cout << "Hello ";
+  int b = 4;
+  std::cout << "world";
+    
+  return 0;  
+}
+```
+
+Es posible que sea más eficiente inicializar todas las variables al principio:
+
+``` C++
+int main()
+{
+  int a = 4, b = 4;
+  std::cout << "Hello ";
+  std::cout << "world";
+    
   return 0;  
 }
 ```
@@ -157,7 +184,7 @@ int main()
 
 ## Inline functions
 
-```
+``` C++
 int f(int a) {return a + 1;}
 int main()
 {
@@ -169,7 +196,8 @@ int main()
 ```
 
 La llamada a la función f(int) se puede eliminar y dejar únicamente el cuerpo:
-```
+
+``` C++
 int main()
 {
   int a = 4;
@@ -182,7 +210,7 @@ int main()
 
 ## Loop unrolling
 
-```
+``` C++
 int f(int a) {return a + 1;}
 int main()
 {
@@ -197,7 +225,7 @@ int main()
 
 El loop se puede quitar para dejar únicamente las asignaciones:
 
-```
+``` C++
 int f(int a) {return a + 1;}
 int main()
 {
@@ -215,7 +243,7 @@ int main()
 
 Parte del código se puede ejecutar en tiempo de compilación.
 
-```
+``` C++
 int f(int a) {return a + 1;}
 int main()
 {
@@ -238,13 +266,13 @@ Para ello, puede hacer modificaciones en el código para mejorar el tiempo medid
 
 Por ejemplo, tomemos el siguiente código que intenta medir el tiempo de la función ```f()```.
 
-```
+``` C++
 extern int f(int a);
 int main()
 {
   tic();
   for(int i=0;i<1000;++i) {
-     f(a);
+     f(3);
   }
   std::cout << toc()/1000 << std::endl;
  
@@ -267,7 +295,7 @@ No está obligado a mirar lo que hacen otras funciones salvo que se lo indiquemo
 
 Por ejemplo, supongamos que tenemos dos funciones que se llaman en dos threads:
 
-```
+``` C++
 static int a = 0;
 
 static void func_1() 
@@ -283,7 +311,7 @@ static void func_2()
 }
 ```
 
-Nos podemos preguntar, ¿alguna vez se imprimirá el valor de 500 en la pantalla? La respuesta es... tal vez. 
+Nos podemos preguntar, ¿alguna vez se imprimirá el valor de ```a``` en la pantalla? La respuesta es... tal vez no. 
 
 El optimizador puede decidir eliminar el ```for``` de la primera función por una asignación.
 
@@ -296,7 +324,7 @@ ya sabe que la variable ```a``` no va a ser cero. Por lo tanto, su valor es 1000
 
 Es decir, el siguiente código es perfectamente compatible con el anterior al lanzar dos threads:
 
-```
+``` C++
 static int a = 0;
 
 static void func_1() 
@@ -336,7 +364,7 @@ de manera que si encuentra una estructura que lleva a comportamiento indefinido,
 
 El ejemplo clásico es:
 
-```
+``` C++
 void init(int *a)
 {
   *a = 0;
@@ -357,7 +385,7 @@ Obviamente, esto no quita que nuestro código tenga que estar optimizado, pero n
 - Evitar copias innecesarias.
 - No reservar memoria en el *heap* si no es necesario.
 
-Hay que tener en cuenta que en muchos casos un uso correcto de la caché del procesador puede ser más beneficioso que un algoritmo intrincado para beneficiar al optimizador.
+En muchos casos, un uso correcto de la caché del procesador puede ser más beneficioso que un algoritmo intrincado para beneficiar al optimizador.
 
 Como caso curioso, en C++20 se han añadido los atributos [likely y unlikely](https://en.cppreference.com/w/cpp/language/attributes/likely) 
 que permiten definir qué parte de un código es más probable que se ejecute en una ramificación y permite al optimizador mejorar el resultado para esa rama.

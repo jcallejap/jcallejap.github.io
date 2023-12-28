@@ -47,7 +47,11 @@ AUTHOR_FEED_ATOM = None
 AUTHOR_FEED_RSS = None
 
 # Blogroll
-LINKS = (('Pelican', 'https://getpelican.com/'),('Python.org', 'https://www.python.org/'),)
+LINKS = (
+    ('Pelican', 'https://getpelican.com/'),
+    ('Python.org', 'https://www.python.org/'),
+    ('C++', 'https://en.cppreference.com/w/'),
+    )
 
 # Social widget
 SOCIAL = (('stack-overflow', 'https://stackoverflow.com/users/218774/j-calleja'), ("github", "https://github.com/jcallejap"),)

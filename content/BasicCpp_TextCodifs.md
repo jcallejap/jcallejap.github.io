@@ -34,9 +34,9 @@ La codificación ASCII sólo utiliza los primeros 7 bits de un byte, por lo que 
 El uso de estos números libres se estandarizó en la norma [ISO 8859](https://es.wikipedia.org/wiki/ISO/IEC_8859).
 Esta norma tiene 16 modos, en función de qué tipo de idioma se está codificando.
 Por ejemplo, para el alfabeto español se puede usar la norma 8859-1, donde se tiene la *ñ* o caracteres con acentos.
-Si se está usando hebreo, se utiliza la 8859-8 que tiene estos caracteres.
+Si se está usando hebreo, se utiliza la 8859-8 que contiene esos caracteres.
 
-El problema con ASCII o ISO-8859 es que sólo utilizan un byte por caracter, lo que impide que se puedan usar caracteres como el chino o el japonés que tienen miles de caracteres.
+El problema con ASCII o ISO-8859 es que sólo utilizan un byte por caracter, lo que impide que se puedan emplear para el chino o el japonés que tienen miles de caracteres.
 Para solucionar este problema, existen diferentes codificaciones, siendo la más extendida la [Unicode](https://es.wikipedia.org/wiki/Unicode).
 
 
@@ -66,6 +66,8 @@ Cada idioma puede tener sus propias reglas para definir qué es una letra, por l
 - Algunos idiomas cambian las letras en función de su posición dentro en una frase.
   Entonces, ¿son letras distintas o son las mismas con distinta grafía?
 
+Estos puntos son algunos sobre los que ha tenido que decidir el estándar Unicode.
+
 ## Punto de código (code point)
 
 Una vez hemos decidido un conjunto de letras diferenciadas, se le asigna un número a cada una, que llamaremos punto de código (code point). 
@@ -73,10 +75,10 @@ Por ejemplo, la letra A tiene el número 41.
 Normalmente, se escribe como U+0041, donde U significa Unicode y después se indica el número en base 16.
 
 Algunos de los puntos de código se consideran modificadores.
-Por ejemplo, hay un punto de código que indica que hay se añade un acento.
+Por ejemplo, hay un punto de código que indica que hay que añadir un acento.
 
 Con esto, aparece una problemática nueva, ya que algunas letras pueden codificarse de formas distintas siendo la misma letra.
-Por ejemplo, la letra *Á* tiene su propio punto de código pero también puede ser una *A* + *acento*.
+Por ejemplo, la letra *Á* tiene su propio punto de código pero también puede ser una *A + acento*.
 
 Se denomina normalización a la modificación de una secuencia de letras para que todas utilicen un mismo tipo de puntos de código para las letras compuestas.
 
@@ -84,10 +86,10 @@ Se denomina normalización a la modificación de una secuencia de letras para qu
 
 Una vez tenemos todas las letras de un texto codificadas con sus puntos de código y normalizadas, hay que decidir cómo convertir los puntos de código a números.
 
-La forma más directa sería escribir directamente los números de cada punto. Esto se llama UTF-32, ya que se utilizan 32 bits para cada número (a pesar de que Unicode no usa los 32 bits).
+La forma más directa sería escribir directamente los números de cada punto. Esta codificación se denomina UTF-32, ya que se utilizan números de 32 bits para punto (a pesar de que Unicode realmente no usa los 32 bits).
 Sin embargo, esto presenta varios problemas:
 
-- Las letras de origen latino (inglés, español, ...) tienen números pequeños dentro de los puntos de código, por lo que la mayoría de los números serán ceros.
+- Las letras de origen latino (inglés, español, ...) tienen números pequeños dentro de los puntos de código, por lo que no necesitan los 32 bits.
   Podría parecer un desperdicio de espacio.
 - Hay arquitecturas que escriben los números como LSB o HSB, por lo que habría que especificar la arquitectura.
 
@@ -131,7 +133,7 @@ Por ejemplo:
   El BOM tiene como valor *U+FEFF*. El caracter *U+FFFE* no existe, por lo que si se encuentra este conjunto de bytes, podemos saber el orden. 
  
 Si guardamos un archivo de texto, tenemos que indicar la codificación en el propio archivo.
-Por ejemplo, para UTF-16, se suele guardar el BOM justo al principio del archivo.
+Si se usa UTF-16, se suele guardar el BOM justo al principio del archivo.
 
 Algunos formatos también tienen un lugar donde especificar la codificación.
 Por ejemplo, en la cabecera de los archivos XML se puede especificar usando el parámetro encoding:
@@ -151,7 +153,7 @@ Originalmente, C++ tenía dos [tipos de datos](https://en.cppreference.com/w/cpp
 El primero estaba pensado para ASCII y es el tipo de dato básico de C++, siendo su tamaño, generalmente, 1 byte.
 El segundo estaba pensado para *caracteres anchos* y, como muchos datos de C, no estaba completamente definido.
 Windows decidió que su tamaño fuese 2 bytes y lo empleó para UTF-16LE. 
-Linux, por el contrario le dio un tamaño de 4 bits.
+Linux, por el contrario le dio un tamaño de 4 bytes.
 
 A partir de C++11, se hicieron algunos avances hacia una estandarización de los tipos de datos de las codificaciones, añadiendo:
 
@@ -160,6 +162,8 @@ A partir de C++11, se hicieron algunos avances hacia una estandarización de los
 - ```char8_t``` para UTF-8 (C++20, tardó en oficializarse porque originalmente se pensó en usar char para UTF-8).
 
 Estos nuevos tipos de datos también trajeron una ampliación en los [formatos de los literales](https://en.cppreference.com/w/cpp/language/character_literal).
+
+El tipo ```char8_t``` fue polémico ya que muchas librerías ya usaban char para UTF-8 y podrían aparecer incompatibilidades porque no existe una conversión automática entre ambos tipos.
 
 
 # 6. No todos los sistemas operativos tienen la misma codificación interna y eso importa

@@ -1,4 +1,4 @@
-Title: Curiosidades de C++: operador flecha
+Title: Curiosidades de C++: operador *flecha larga*
 Date: 2023-06-24
 Category: Curiosidades de C++
 Tags: C++
@@ -14,7 +14,6 @@ La siguiente pregunta está tomada de StackOverflow, pero me ha parecido curiosa
 ¿Qué imprime?
 
 ```
-
 #include <stdio.h>
 int main()
 {
@@ -24,7 +23,6 @@ int main()
         printf("%d ", x);
     }
 }
-
 ```
 
 # Respuesta corta
