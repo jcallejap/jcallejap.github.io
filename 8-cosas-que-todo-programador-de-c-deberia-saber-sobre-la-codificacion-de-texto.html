@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+
+
+
+
+
+
+
+
+ 
+
+<meta name="author" content="jcallejap" />
+<meta name="description" content="Dentro de la codificación de texto, hay 8 ideas que todo programador debe conocer..." />
+<meta name="keywords" content="C++, Unicode">
+
+
+  <meta property="og:site_name" content="Programando en tiempo real"/>
+  <meta property="og:title" content="8 cosas que todo programador de C++ debería saber sobre la codificación de texto"/>
+  <meta property="og:description" content="Dentro de la codificación de texto, hay 8 ideas que todo programador debe conocer..."/>
+  <meta property="og:locale" content="es_ES"/>
+  <meta property="og:url" content="/8-cosas-que-todo-programador-de-c-deberia-saber-sobre-la-codificacion-de-texto.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2023-12-17 13:14:00+01:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="/author/jcallejap.html">
+  <meta property="article:section" content="Iniciación C++"/>
+  <meta property="article:tag" content="C++"/>
+  <meta property="article:tag" content="Unicode"/>
+  <meta property="og:image" content="/images/profile.png">
+
+  <title>Programando en tiempo real &ndash; 8 cosas que todo programador de C++ debería saber sobre la codificación de texto</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="/">
+      <img src="/images/profile.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="/"></a>
+    </h1>
+
+    <p>Programación (principalmente) en C++</p>
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="/pages/sobre-mi.html#sobre-mi">
+                Sobre mí
+              </a>
+            </li>
+
+          <li>
+            <a target="_self" href="https://getpelican.com/" >Pelican</a>
+          </li>
+          <li>
+            <a target="_self" href="https://www.python.org/" >Python.org</a>
+          </li>
+          <li>
+            <a target="_self" href="https://en.cppreference.com/w/" >C++</a>
+          </li>
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-stack-overflow"
+           href="https://stackoverflow.com/users/218774/j-calleja"
+           target="_blank">
+          <i class="fa-brands fa-stack-overflow"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/jcallejap"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="/">Home</a>
+
+  <a href="/archives">Archives</a>
+  <a href="/categories">Categories</a>
+  <a href="/tags">Tags</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="8-cosas-que-todo-programador-de-c-deberia-saber-sobre-la-codificacion-de-texto">8 cosas que todo programador de C++ debería saber sobre la codificación de texto</h1>
+    <p>
+      Posted on Sun 17 December 2023 in <a href="/category/iniciacion-c.html">Iniciación C++</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>0. No existe el <em>texto plano</em>, se necesita conocer la codificación</h1>
+<p>Para una persona, un texto es un conjunto de caracteres. </p>
+<p>Para un ordenador, un texto es una lista de números.</p>
+<p>Es necesario definir la función que transforme de los números a los caracteres y viceversa.
+Esta función puede ser tan sencilla como una tabla o tan compleja como un sistema de encriptación.
+En cualquier caso, es necesario definirla y que sea conocido por ambas partes.</p>
+<p>Si una de las partes no tiene acceso a esta función, no es posible la comunicación. 
+Por lo tanto, no puede existir un texto sin una definición de cómo está codificado.</p>
+<p>Es cierto que hay algunas codificaciones que se toman por defecto.
+Por ejemplo, en ausencia de otra información, podemos suponer que el texto está en ASCII.
+Si estamos usando Linux, podemos pensar que la codificación es UTF-8 o, en el caso de Windows, UTF-16.
+Pero esto no significa que no necesitamos la codificación. 
+Sólo que podemos <em>adivinar</em> cuál estamos usando.</p>
+<h1>1. Existen muchos tipos de codificaciones</h1>
+<p>La codificación más famosa, por ser sencilla y relativamente antigua es <a href="https://es.wikipedia.org/wiki/ASCII">ASCII</a>.
+Da un valor numérico a cada letra del alfabeto inglés, a los números y alguno de los caracteres especiales (como símbolos matemáticos o de control).</p>
+<p>La codificación ASCII sólo utiliza los primeros 7 bits de un byte, por lo que deja 127 números libres para asignar otros símbolos.
+El uso de estos números libres se estandarizó en la norma <a href="https://es.wikipedia.org/wiki/ISO/IEC_8859">ISO 8859</a>.
+Esta norma tiene 16 modos, en función de qué tipo de idioma se está codificando.
+Por ejemplo, para el alfabeto español se puede usar la norma 8859-1, donde se tiene la <em>ñ</em> o caracteres con acentos.
+Si se está usando hebreo, se utiliza la 8859-8 que contiene esos caracteres.</p>
+<p>El problema con ASCII o ISO-8859 es que sólo utilizan un byte por caracter, lo que impide que se puedan emplear para el chino o el japonés que tienen miles de caracteres.
+Para solucionar este problema, existen diferentes codificaciones, siendo la más extendida la <a href="https://es.wikipedia.org/wiki/Unicode">Unicode</a>.</p>
+<h1>2. Codificar caracteres es complicado</h1>
+<p>Antes de definir la función de codificación/decodificación del texto, es necesario hacer algunas definiciones.
+Vamos a tomar las del estándar Unicode, por ser el más extendido.</p>
+<h2>Letra</h2>
+<p>La letra es la únidad mínima de un texto. 
+Por ejemplo, tenemos la letra <em>a</em>. 
+Esta letra es distinta a la <em>A</em> (a mayúscula) o la <em>b</em>, pero es independiente de su grafía.
+Es decir, la letra <em>A</em> en Arial es la misma que la letra <em>A</em> en Times New Roman.</p>
+<p>Cada idioma puede tener sus propias reglas para definir qué es una letra, por lo que ya aparecen varias complicaciones:</p>
+<ul>
+<li>
+<p>Estas reglas pueden cambiar en el tiempo. 
+  Por ejemplo, en español antiguamente existía la letra <em>che</em> (ch) o la letra elle (ll). 
+  Alfabeticamente, <em>calvo</em> venía antes que <em>calle</em> porque la letra <em>ll</em> estaba en el alfabeto después de la <em>l</em>.
+  Sin embargo, ya no es así.</p>
+</li>
+<li>
+<p>Estas reglas pueden tener disputas políticas o teóricas. 
+  Por ejemplo, ¿es la letra <em>á</em> la misma que la letra <em>a</em>?
+  ¿Son los emojis letras?</p>
+</li>
+<li>
+<p>Algunos idiomas cambian las letras en función de su posición dentro en una frase.
+  Entonces, ¿son letras distintas o son las mismas con distinta grafía?</p>
+</li>
+</ul>
+<p>Estos puntos son algunos sobre los que ha tenido que decidir el estándar Unicode.</p>
+<h2>Punto de código (code point)</h2>
+<p>Una vez hemos decidido un conjunto de letras diferenciadas, se le asigna un número a cada una, que llamaremos punto de código (code point). 
+Por ejemplo, la letra A tiene el número 41.
+Normalmente, se escribe como U+0041, donde U significa Unicode y después se indica el número en base 16.</p>
+<p>Algunos de los puntos de código se consideran modificadores.
+Por ejemplo, hay un punto de código que indica que hay que añadir un acento.</p>
+<p>Con esto, aparece una problemática nueva, ya que algunas letras pueden codificarse de formas distintas siendo la misma letra.
+Por ejemplo, la letra <em>Á</em> tiene su propio punto de código pero también puede ser una <em>A + acento</em>.</p>
+<p>Se denomina normalización a la modificación de una secuencia de letras para que todas utilicen un mismo tipo de puntos de código para las letras compuestas.</p>
+<h2>Codificación</h2>
+<p>Una vez tenemos todas las letras de un texto codificadas con sus puntos de código y normalizadas, hay que decidir cómo convertir los puntos de código a números.</p>
+<p>La forma más directa sería escribir directamente los números de cada punto. Esta codificación se denomina UTF-32, ya que se utilizan números de 32 bits para punto (a pesar de que Unicode realmente no usa los 32 bits).
+Sin embargo, esto presenta varios problemas:</p>
+<ul>
+<li>Las letras de origen latino (inglés, español, ...) tienen números pequeños dentro de los puntos de código, por lo que no necesitan los 32 bits.
+  Podría parecer un desperdicio de espacio.</li>
+<li>Hay arquitecturas que escriben los números como LSB o HSB, por lo que habría que especificar la arquitectura.</li>
+</ul>
+<p>Otra opción es utilizar una cierta compresión, donde se utilice 1 byte para las primeras letras y más bytes para las que tienen un punto de código mayor.
+Este formato se denomina UTF-8. 
+Sus principales ventajas son:</p>
+<ul>
+<li>Los textos de alfabetos latinos ocupan menos espacio que en UTF-32.</li>
+<li>No es necesario especificar si es LSB o HSB.</li>
+</ul>
+<p>Su principal desventaja es que es más complicado de decodificar porque cada letra ahora tiene un tamaño variable en función de su punto de código.</p>
+<p>También se puede usar UTF-16, donde se utilizan 2 bytes para las letras de puntos pequeños y 4 para las mayores. </p>
+<h1>3. La libraría heredada de C está pensada para ASCII</h1>
+<p>Todas las librerías heredadas de C asumen que la codificación del texto es ASCII por lo que, en general, no pueden usarse de forma segura usando otra codificación.</p>
+<p>Por ejemplo:</p>
+<ul>
+<li><code>strlen</code> asume que un byte a cero indica el final de la cadena pero en UTF-16 pueden aparecer fácilmente ceros en mitad de la cadena.
+  Si se usa UTF-8, no aparecen ceros extra, pero <code>strlen</code> cuenta el número de bytes, no el número de caracteres ya que puede haber caracteres que empleen dos o más bytes.</li>
+<li><code>strcmp</code> realiza una comparación byte a byte de la cadena.<br>
+  Sin embargo, si la cadena no está normalizada, dos textos idénticos pueden usar distintos bytes.</li>
+</ul>
+<p>Por lo tanto, es necesario usar funciones que sí estén preparadas para la codificación que se ha usado en el texto.</p>
+<h1>4. Algunas codificaciones necesitan información extra para mostrar el texto</h1>
+<p>Algunas codificciones necesitan información extra para poder decodificarse.
+Por ejemplo:</p>
+<ul>
+<li>La codificación ISO 8859 necesita que se indique qué caracteres se almacenan en el grupo superior.
+  Si no se hace, no se puede decodificar el texto y podríamos terminar mostrando caracteres latinos cuando el texto necesita caracteres griegos.
+  No hay una forma estándar de indicar esta información en un archivo.</li>
+<li>La codificación UTF-16 utiliza números de 16 bits como base. 
+  Estos números se almacenan como dos bytes, por lo que existen dos formas de guardar el número: LSB y MSB.
+  Para especificar cuál se está usando, existe un caracter de control de Unicode denominado <a href="https://es.wikipedia.org/wiki/Marca_de_orden_de_bytes">BOM</a>.
+  El BOM tiene como valor <em>U+FEFF</em>. El caracter <em>U+FFFE</em> no existe, por lo que si se encuentra este conjunto de bytes, podemos saber el orden. </li>
+</ul>
+<p>Si guardamos un archivo de texto, tenemos que indicar la codificación en el propio archivo.
+Si se usa UTF-16, se suele guardar el BOM justo al principio del archivo.</p>
+<p>Algunos formatos también tienen un lugar donde especificar la codificación.
+Por ejemplo, en la cabecera de los archivos XML se puede especificar usando el parámetro encoding:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot; ?&gt;</span>
+</code></pre></div>
+
+<h1>5. C++ no tuvo un tipo de dato para Unicode hasta C++11</h1>
+<p>Originalmente, C++ tenía dos <a href="https://en.cppreference.com/w/cpp/language/types">tipos de datos</a> para caracteres:</p>
+<ul>
+<li>char</li>
+<li>wchar_t</li>
+</ul>
+<p>El primero estaba pensado para ASCII y es el tipo de dato básico de C++, siendo su tamaño, generalmente, 1 byte.
+El segundo estaba pensado para <em>caracteres anchos</em> y, como muchos datos de C, no estaba completamente definido.
+Windows decidió que su tamaño fuese 2 bytes y lo empleó para UTF-16LE. 
+Linux, por el contrario le dio un tamaño de 4 bytes.</p>
+<p>A partir de C++11, se hicieron algunos avances hacia una estandarización de los tipos de datos de las codificaciones, añadiendo:</p>
+<ul>
+<li><code>char16_t</code> para UTF-16.</li>
+<li><code>char32_t</code> paraUTF-32.</li>
+<li><code>char8_t</code> para UTF-8 (C++20, tardó en oficializarse porque originalmente se pensó en usar char para UTF-8).</li>
+</ul>
+<p>Estos nuevos tipos de datos también trajeron una ampliación en los <a href="https://en.cppreference.com/w/cpp/language/character_literal">formatos de los literales</a>.</p>
+<p>El tipo <code>char8_t</code> fue polémico ya que muchas librerías ya usaban char para UTF-8 y podrían aparecer incompatibilidades porque no existe una conversión automática entre ambos tipos.</p>
+<h1>6. No todos los sistemas operativos tienen la misma codificación interna y eso importa</h1>
+<p>Linux utiliza UTF-8 mientras que Windows suele usar UTF-16 (aunque es posible cambiarlo en Windows 10, no se suele recomendar).
+Esto plantea un problema extra para escribir texto portable porque hay que tener en cuenta la codificación del texto que se pasa al interfaz.</p>
+<p>La tendencia actual es escribir todo el texto en UTF-8 y cambiar de codificación sólo cuando se va a interactuar con el sistema operativo.
+Existen algunas librerías para ayudarnos como <a href="https://www.boost.org/doc/libs/1_84_0/libs/nowide/doc/html/index.html">boost::nowide</a>.</p>
+<p>La introducción en C++17 de la librería <a href="https://en.cppreference.com/w/cpp/filesystem">FileSystem</a> permitió también simplificar el hecho de que 
+Windows utiliza rutas de archivo en UTF-16 y Linux en UTF-8.</p>
+<h1>7. La comparación de textos es mucho más complicada de lo que parece</h1>
+<p>En los alfabetos latinos se establece un orden de los caracteres y después se ordenan las palabras según ese orden empezando por el primer caracter o los siguientes si los primeros coinciden.
+Este algoritmo, tan sencillo y conocido, tiene ya varios problemas al llevarlo a la práctica:</p>
+<ul>
+<li>¿Influye que una letra sea mayúscula?</li>
+<li>¿Influye que una letra esté acentuada?</li>
+<li>¿Influye el país? (Por ejemplo, en España durante mucho tiempo la letra <em>ll</em> fue distinta a la <em>l</em>).</li>
+<li>¿Qué ocurre si se intercalan caracteres de otros alfabetos? Por ejemplo, los caracteres <em>@</em>, <em>&amp;</em>, <em>$</em>.</li>
+<li>¿Cómo se ordenan los emojis?</li>
+</ul>
+<p>Por otro lado, existen sistemas de escritura más complicados que los latinos.
+Por ejemplo, los caracteres chinos se ordenan según el número de trazos necesarios para escribirlos.</p>
+<p>Esto hace que sea necesario definir reglas complejas para la comparación de textos.
+De esto se encarga el consorcio de <a href="https://es.wikipedia.org/wiki/Consorcio_Unicode">Unicode</a> aunque la implementación de la norma depende del lenguaje de programación.</p>
+<h1>Referencias para saber más</h1>
+<p><a href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/">The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!)</a></p>
+<p><a href="https://tonsky.me/blog/unicode/">The Absolute Minimum Every Software Developer Must Know About Unicode in 2023 (Still No Excuses!)</a></p>
+<p><a href="https://unicode.org/faq/basic_q.html">Unicode FAQs</a></p>
+<p><a href="https://utf8everywhere.org/">UTF-8 Everywhere</a></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="/tag/c.html">C++</a>
+      <a href="/tag/unicode.html">Unicode</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="/theme/img/cc/by-sa.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Programando en tiempo real ",
+  "url" : "",
+  "image": "/images/profile.png",
+  "description": "Ejemplos de algoritmos, curiosidades, y cosas que voy descubriendo mientras desarrollo aplicaciones."
+}
+</script>
+</body>
+</html>
