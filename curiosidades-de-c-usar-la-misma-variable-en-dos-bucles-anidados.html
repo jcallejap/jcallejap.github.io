@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+
+
+
+
+
+
+
+
+ 
+
+<meta name="author" content="jcallejap" />
+<meta name="description" content="El siguiente código parece incorrecto, pero... ¿lo es?" />
+<meta name="keywords" content="C++">
+
+
+  <meta property="og:site_name" content="Programando en tiempo real"/>
+  <meta property="og:title" content="Curiosidades de C++: usar la misma variable en dos bucles anidados"/>
+  <meta property="og:description" content="El siguiente código parece incorrecto, pero... ¿lo es?"/>
+  <meta property="og:locale" content="es_ES"/>
+  <meta property="og:url" content="/curiosidades-de-c-usar-la-misma-variable-en-dos-bucles-anidados.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2023-05-09 13:14:00+02:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="/author/jcallejap.html">
+  <meta property="article:section" content="Curiosidades de C++"/>
+  <meta property="article:tag" content="C++"/>
+  <meta property="og:image" content="/images/profile.png">
+
+  <title>Programando en tiempo real &ndash; Curiosidades de C++: usar la misma variable en dos bucles anidados</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="/">
+      <img src="/images/profile.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="/"></a>
+    </h1>
+
+    <p>Programación (principalmente) en C++</p>
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="/pages/sobre-mi.html#sobre-mi">
+                Sobre mí
+              </a>
+            </li>
+
+          <li>
+            <a target="_self" href="https://getpelican.com/" >Pelican</a>
+          </li>
+          <li>
+            <a target="_self" href="https://www.python.org/" >Python.org</a>
+          </li>
+          <li>
+            <a target="_self" href="https://en.cppreference.com/w/" >C++</a>
+          </li>
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-stack-overflow"
+           href="https://stackoverflow.com/users/218774/j-calleja"
+           target="_blank">
+          <i class="fa-brands fa-stack-overflow"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/jcallejap"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="/">Home</a>
+
+  <a href="/archives">Archives</a>
+  <a href="/categories">Categories</a>
+  <a href="/tags">Tags</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="curiosidades-de-c-usar-la-misma-variable-en-dos-bucles-anidados">Curiosidades de C++: usar la misma variable en dos bucles anidados</h1>
+    <p>
+      Posted on Tue 09 May 2023 in <a href="/category/curiosidades-de-c.html">Curiosidades de C++</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>Pregunta</h1>
+<p>¿Es correcto el siguiente código para imprimir un triángulo invertido?</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="mi">5</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">auto</span><span class="w"> </span><span class="n">limit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="k">for</span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">&lt;</span><span class="n">limit</span><span class="p">;</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s1">&#39;-&#39;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">cout</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="p">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<h1>Respuesta corta</h1>
+<p><a href="https://coliru.stacked-crooked.com/a/c4049493567cbfa8">Sí</a></p>
+<h1>Respuesta larga</h1>
+<p>Es posible crear dos variables con el mismo nombre si están en un <em>scope</em> diferente, aunque sean <em>scopes</em> anidados.</p>
+<p>Por otro lado, cada bucle <em>for</em> crea un nuevo <em>scope</em> para su variable interna.</p>
+<p>Por lo tanto, en el ejemplo, tenemos dos scopes independientes: uno para cada <em>for</em> y en cada uno hay una variable <code>i</code> distinta declarada.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="/tag/c.html">C++</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="/theme/img/cc/by-sa.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Programando en tiempo real ",
+  "url" : "",
+  "image": "/images/profile.png",
+  "description": "Ejemplos de algoritmos, curiosidades, y cosas que voy descubriendo mientras desarrollo aplicaciones."
+}
+</script>
+</body>
+</html>

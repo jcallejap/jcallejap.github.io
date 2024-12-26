@@ -1,0 +1,248 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+
+
+
+
+
+
+
+
+ 
+
+<meta name="author" content="jcallejap" />
+<meta name="description" content="Una ruta es el camino para llegar a un archivo pero, ¿qué límites tiene?" />
+<meta name="keywords" content="C++, Windows">
+
+
+  <meta property="og:site_name" content="Programando en tiempo real"/>
+  <meta property="og:title" content="Problema con la longitud de las rutas en Windows"/>
+  <meta property="og:description" content="Una ruta es el camino para llegar a un archivo pero, ¿qué límites tiene?"/>
+  <meta property="og:locale" content="es_ES"/>
+  <meta property="og:url" content="/problema-con-la-longitud-de-las-rutas-en-windows.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2023-10-28 00:00:00+02:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="/author/jcallejap.html">
+  <meta property="article:section" content="Windows"/>
+  <meta property="article:tag" content="C++"/>
+  <meta property="article:tag" content="Windows"/>
+  <meta property="og:image" content="/images/profile.png">
+
+  <title>Programando en tiempo real &ndash; Problema con la longitud de las rutas en Windows</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="/">
+      <img src="/images/profile.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="/"></a>
+    </h1>
+
+    <p>Programación (principalmente) en C++</p>
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="/pages/sobre-mi.html#sobre-mi">
+                Sobre mí
+              </a>
+            </li>
+
+          <li>
+            <a target="_self" href="https://getpelican.com/" >Pelican</a>
+          </li>
+          <li>
+            <a target="_self" href="https://www.python.org/" >Python.org</a>
+          </li>
+          <li>
+            <a target="_self" href="https://en.cppreference.com/w/" >C++</a>
+          </li>
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-stack-overflow"
+           href="https://stackoverflow.com/users/218774/j-calleja"
+           target="_blank">
+          <i class="fa-brands fa-stack-overflow"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/jcallejap"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="/">Home</a>
+
+  <a href="/archives">Archives</a>
+  <a href="/categories">Categories</a>
+  <a href="/tags">Tags</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="problema-con-la-longitud-de-las-rutas-en-windows">Problema con la longitud de las rutas en Windows</h1>
+    <p>
+      Posted on Sat 28 October 2023 in <a href="/category/windows.html">Windows</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>Los paths en Windows</h1>
+<p>Como primer punto, conviene recordar cómo se contruyen la ruta de un archivo en Windows:</p>
+<ul>
+<li>Letra de la unidad, seguido por el separador ':'.</li>
+<li>Barra '\' para indicar el directorio raíz.</li>
+<li>Nombres de directorios, separados por '\'.</li>
+<li>Nombre del archivo.</li>
+</ul>
+<p>Cada uno de estos puntos es opcional.
+Por ejemplo, las siguientes rutas indican:</p>
+<ul>
+<li><strong>Directorio\archivo.pdf</strong>: Ruta relativa desde el directorio actual.</li>
+<li><strong>C:\Directorio\archivo.pdf</strong>: Ruta absoluta desde el raíz de la unidad C.</li>
+<li><strong>C:Directorio\archivo.pdf</strong>: Ruta relativa desde el directorio actual de la unidad C.</li>
+</ul>
+<p>Los directorios con significados especiales son:</p>
+<ul>
+<li><strong>..</strong>: directorio anterior.</li>
+<li><strong>.</strong>: directorio actual.</li>
+</ul>
+<h1>El límite de tamaño de ruta</h1>
+<p>En las ediciones de Windows anteriores a Windows 10 versión 1607
+el tamaño máximo de la ruta que se puede pasar a una función de Windows es de MAX_PATH, 
+que se define como 260 caracteres incluyendo el último de terminación.
+Es decir, no se puede pasar una ruta superior a 259 caracteres.</p>
+<p>Además, la ruta de los directorios deben permitir archivos cuyo nombre tenga el formato 8+3 (8 caracteres + 3 de extensión). 
+Por lo tanto, no pueden ser superior a 248 caracteres.</p>
+<p>Esto choca con algunos los sistemas de archivos. 
+Por ejemplo NTFS permite nombres de archivos hasta 255 caracteres.
+Aún así Windows impone su propias limitaciones.</p>
+<h1>Solución a partir de Windows 10 versión 1607</h1>
+<p>A partir de Windows 10 versión 1607 se permiten rutas más largas, pero no por defecto.
+Son necesarias dos condiciones para que una aplicación pueda usarlas:</p>
+<ul>
+<li>La clave <em>Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled</em>del Registro debe existir y establecerse en 1.</li>
+<li>El manifiesto de aplicación también debe incluir el elemento <em>ws2:longPathAware</em>.</li>
+</ul>
+<p>Si se cumplen estas dos condiciones, muchas de las funciones del API de Windows pierden la limitación de 260 caracteres.</p>
+<h1>Solución usando rutas extendidas</h1>
+<p>Las versiones de Unicode del API de Windows admiten rutas de hasta 32676 caracteres, pero éstas deben empezar por el prefijo <em>"\?\"</em>.
+Por ejemplo, se podría usar:</p>
+<p><em>\?\C:\NombreDirectorioMuyLargo\NombreDeArchivoLargo</em>.</p>
+<p>Sin embargo, no se puede usar este sistema para referirse a rutas de acceso relativas, que siguen teniendo la limitación de MAX_PATH caracteres.</p>
+<p>Existe un problema extra con este sistema. 
+A día de hoy, el módulo <strong>filesystem</strong> de la librería estándar de C++ que viene con el compilador de Microsoft no gestiona correctamente los paths con este prefijo.</p>
+<h1>Referencias</h1>
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry">Maximum Path Length Limitation</a></p>
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/fileio/naming-a-file">Naming Files, Paths, and Namespaces</a></p>
+<p><a href="https://docs.microsoft.com/es-es/dotnet/standard/io/file-path-formats">File path formats on Windows systems</a></p>
+<p><a href="https://stackoverflow.com/a/837855/218774">Is there an equivalent to WinAPI's MAX_PATH under linux/unix?</a></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="/tag/c.html">C++</a>
+      <a href="/tag/windows.html">Windows</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="/theme/img/cc/by-sa.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Programando en tiempo real ",
+  "url" : "",
+  "image": "/images/profile.png",
+  "description": "Ejemplos de algoritmos, curiosidades, y cosas que voy descubriendo mientras desarrollo aplicaciones."
+}
+</script>
+</body>
+</html>

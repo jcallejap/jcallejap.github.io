@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+
+
+
+
+
+
+
+
+ 
+
+<meta name="author" content="jcallejap" />
+<meta name="description" content="¿Qué mejor manera de resolver un juego de niños que usar backtracking?" />
+<meta name="keywords" content="C++, Optimización">
+
+
+  <meta property="og:site_name" content="Programando en tiempo real"/>
+  <meta property="og:title" content="Resolver el Puzzle-A-Day para niños"/>
+  <meta property="og:description" content="¿Qué mejor manera de resolver un juego de niños que usar backtracking?"/>
+  <meta property="og:locale" content="es_ES"/>
+  <meta property="og:url" content="/resolver-el-puzzle-a-day-para-ninos.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2023-10-29 00:00:00+02:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="/author/jcallejap.html">
+  <meta property="article:section" content="Resolución de problemas en C++"/>
+  <meta property="article:tag" content="C++"/>
+  <meta property="article:tag" content="Optimización"/>
+  <meta property="og:image" content="/images/profile.png">
+
+  <title>Programando en tiempo real &ndash; Resolver el Puzzle-A-Day para niños</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="/">
+      <img src="/images/profile.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="/"></a>
+    </h1>
+
+    <p>Programación (principalmente) en C++</p>
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="/pages/sobre-mi.html#sobre-mi">
+                Sobre mí
+              </a>
+            </li>
+
+          <li>
+            <a target="_self" href="https://getpelican.com/" >Pelican</a>
+          </li>
+          <li>
+            <a target="_self" href="https://www.python.org/" >Python.org</a>
+          </li>
+          <li>
+            <a target="_self" href="https://en.cppreference.com/w/" >C++</a>
+          </li>
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-stack-overflow"
+           href="https://stackoverflow.com/users/218774/j-calleja"
+           target="_blank">
+          <i class="fa-brands fa-stack-overflow"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/jcallejap"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="/">Home</a>
+
+  <a href="/archives">Archives</a>
+  <a href="/categories">Categories</a>
+  <a href="/tags">Tags</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="resolver-el-puzzle-a-day-para-ninos">Resolver el Puzzle-A-Day para niños</h1>
+    <p>
+      Posted on Sun 29 October 2023 in <a href="/category/resolucion-de-problemas-en-c.html">Resolución de problemas en C++</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>0. El puzzle</h1>
+<p>Hace un tiempo, un compañero de trabajo me habló de un puzzle para niños que resultaba difícil de resolver. 
+Consta de un tablero con los meses del año y los días del mes dibujados y 8 piezas de diferentes formas. 
+Estas piezas pueden encajar sobre el tablero de manera que quedan dos huecos libres.</p>
+<p><img alt="BoardImage" src="../images/PuzzleADay_BoardWithPieces.png"></p>
+<p>El objetivo es colocar todas las piezas sobre el tablero de manera que los dos huecos libres queden sobre el mes y el día de la fecha actual.
+Su nombre es Puzzle-A-Day y se puede jugar una versión online <a href="https://mathigon.org/polypad/A62G5zIdDPthg">aquí</a>.</p>
+<p>Por ejemplo, si hoy fuera 17 de octubre, las piezas deberián colocarse de la siguiente manera:</p>
+<p><img alt="BoardImage" src="../images/PuzzleADay_Oct17.png"></p>
+<h1>1. Resolución</h1>
+<p>En un principio, el problema parece complejo. 
+Hay 8 piezas, cada una se puede colocar de ocho maneras distintas en más de 20 posiciones del tablero.</p>
+<p>Sin embargo, cada vez que se coloca una pieza, las opciones para la siguiente se reducen drásticamente.
+Por ejemplo, si estamos probando la siguiente colocación de piezas:</p>
+<p><img alt="BoardImage" src="../images/PuzzleADay_WrongPos.png"></p>
+<p>Se observa que ya no hay hueco para el rectángulo azul, por lo que tendremos que cambiar de posición alguna de las piezas que ya hemos colocado.</p>
+<p>Por lo tanto, un posible proceso para resolver este problema sería ir colocando las piezas una a una de manera sistemática y, 
+si observamos que no vamos a llegar a una solución, dar marcha atrás y modificar la colocación anterior.
+Este algoritmo es conocido como <a href="https://en.wikipedia.org/wiki/Backtracking">backtracking</a>.
+En la práctica, es equivalente a probar todas las posibles combinaciones de piezas hasta encontrar la solución aunque de forma más eficiente.</p>
+<p>En nuestro caso, vamos a seguir los siguientes pasos:</p>
+<ol>
+<li>Localizar la siguiente casilla que queremos cubrir con una pieza.</li>
+<li>Buscar una pieza que cubra esa casilla.</li>
+<li>Si la encontramos, la colocamos y volvemos al paso 1.</li>
+<li>Si no la encontramos, hacemos una modificación a la última pieza que hemos colocado y volvemos al paso 2.
+   Si no existen más opciones para el paso anterior, modificamos la pieza de dos pasos atrás y volvemos al paso 2.</li>
+</ol>
+<p>Por ejemplo, para cubrir el 17 de octubre.</p>
+<ol>
+<li>La primera casilla que queremos cubrir es la que dice 'Jan'.</li>
+<li>Encontramos una pieza que puede cubrir esa casilla:
+   <img alt="BoardImage" src="../images/PuzzleADay_Jan.png"></li>
+<li>La siguiente casilla a cubrir es la que dice 'May'</li>
+<li>Encontramos una pieza que puede cubrir esa casilla:
+   <img alt="BoardImage" src="../images/PuzzleADay_JanMay.png"></li>
+<li>La siguiente casilla a cubrir es la que dice 'Jun'. 
+   Sin embargo, no hay ninguna pieza que pueda cubrirla.
+   Por lo tanto, quitamos la pieza anterior y ponemos otra:
+   <img alt="BoardImage" src="../images/PuzzleADay_JanMay2.png"></li>
+<li>La siguiente casilla a cubrir es la que dice 'Aug'.</li>
+<li>Continuamos probando hasta dar con la solución.</li>
+</ol>
+<h1>3. Implementación en C++</h1>
+<p>En el repositorio de <a href="https://github.com/jcallejap/PuzzleADaySolver">PuzzleADay</a> hay una implementación del algoritmo de backtracking para resolver el problema.
+También se puede ver una demonstración online <a href="https://jcallejap.github.io/PuzzleADaySolver/example.html">aquí</a>.</p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="/tag/c.html">C++</a>
+      <a href="/tag/optimizacion.html">Optimización</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="/theme/img/cc/by-sa.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Programando en tiempo real ",
+  "url" : "",
+  "image": "/images/profile.png",
+  "description": "Ejemplos de algoritmos, curiosidades, y cosas que voy descubriendo mientras desarrollo aplicaciones."
+}
+</script>
+</body>
+</html>

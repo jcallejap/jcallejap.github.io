@@ -1,0 +1,321 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="HandheldFriendly" content="True" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="" />
+
+  <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:ital,wght@0,400;0,700;1,400&family=Source+Sans+Pro:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="/theme/stylesheet/style.min.css">
+
+
+    <link id="pygments-light-theme" rel="stylesheet" type="text/css"
+          href="/theme/pygments/github.min.css">
+
+
+
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/fontawesome.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/brands.css">
+  <link rel="stylesheet" type="text/css" href="/theme/font-awesome/css/solid.css">
+
+
+  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+
+  <!-- Chrome, Firefox OS and Opera -->
+  <meta name="theme-color" content="#333333">
+  <!-- Windows Phone -->
+  <meta name="msapplication-navbutton-color" content="#333333">
+  <!-- iOS Safari -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <!-- Microsoft EDGE -->
+  <meta name="msapplication-TileColor" content="#333333">
+
+
+
+
+
+
+
+
+
+ 
+
+<meta name="author" content="jcallejap" />
+<meta name="description" content="Existen diferentes formas de iterar una enumeración en C++." />
+<meta name="keywords" content="C++">
+
+
+  <meta property="og:site_name" content="Programando en tiempo real"/>
+  <meta property="og:title" content="¿Cómo iterar un enum class?"/>
+  <meta property="og:description" content="Existen diferentes formas de iterar una enumeración en C++."/>
+  <meta property="og:locale" content="es_ES"/>
+  <meta property="og:url" content="/como-iterar-un-enum-class.html"/>
+  <meta property="og:type" content="article"/>
+  <meta property="article:published_time" content="2023-10-18 00:00:00+02:00"/>
+  <meta property="article:modified_time" content=""/>
+  <meta property="article:author" content="/author/jcallejap.html">
+  <meta property="article:section" content="Resolución de problemas en C++"/>
+  <meta property="article:tag" content="C++"/>
+  <meta property="og:image" content="/images/profile.png">
+
+  <title>Programando en tiempo real &ndash; ¿Cómo iterar un enum class?</title>
+
+
+</head>
+<body class="light-theme">
+
+<aside>
+  <div>
+    <a href="/">
+      <img src="/images/profile.png" alt="" title="">
+    </a>
+
+    <h1>
+      <a href="/"></a>
+    </h1>
+
+    <p>Programación (principalmente) en C++</p>
+
+
+    <nav>
+      <ul class="list">
+
+
+            <li>
+              <a target="_self"
+                 href="/pages/sobre-mi.html#sobre-mi">
+                Sobre mí
+              </a>
+            </li>
+
+          <li>
+            <a target="_self" href="https://getpelican.com/" >Pelican</a>
+          </li>
+          <li>
+            <a target="_self" href="https://www.python.org/" >Python.org</a>
+          </li>
+          <li>
+            <a target="_self" href="https://en.cppreference.com/w/" >C++</a>
+          </li>
+      </ul>
+    </nav>
+
+    <ul class="social">
+      <li>
+        <a class="sc-stack-overflow"
+           href="https://stackoverflow.com/users/218774/j-calleja"
+           target="_blank">
+          <i class="fa-brands fa-stack-overflow"></i>
+        </a>
+      </li>
+      <li>
+        <a class="sc-github"
+           href="https://github.com/jcallejap"
+           target="_blank">
+          <i class="fa-brands fa-github"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+
+</aside>
+  <main>
+
+<nav>
+  <a href="/">Home</a>
+
+  <a href="/archives">Archives</a>
+  <a href="/categories">Categories</a>
+  <a href="/tags">Tags</a>
+
+
+</nav>
+
+<article class="single">
+  <header>
+      
+    <h1 id="como-iterar-un-enum-class">¿Cómo iterar un enum class?</h1>
+    <p>
+      Posted on Wed 18 October 2023 in <a href="/category/resolucion-de-problemas-en-c.html">Resolución de problemas en C++</a>
+
+    </p>
+  </header>
+
+
+  <div>
+    <h1>0. Introducción al problema</h1>
+<p>Supongamos que tenemos una enumeración, de tipo entero y sin saltos entre sus elementos. 
+Es decir, algo como: </p>
+<div class="highlight"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="n">MyEnumeration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">};</span>
+</code></pre></div>
+
+<p>Ahora, queremos recorrer todos sus valores.</p>
+<p>Si no se indica lo contrario, los valores de una enumeración empiezan en cero y se incrementan de uno en uno.
+Así que podríamos pensar en algo como:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">for</span><span class="w"> </span><span class="o">(</span><span class="nt">int</span><span class="w"> </span><span class="nt">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nt">MyEnumeration</span><span class="p">::</span><span class="nd">A</span><span class="o">;</span><span class="w"> </span><span class="nt">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="nt">MyEnumeration</span><span class="p">::</span><span class="nd">E</span><span class="o">;</span><span class="w"> </span><span class="o">++</span><span class="nt">i</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Este código tiene un problema importante: 
+no compila porque los <code>enum class</code> no se convierten automáticamente a un entero. </p>
+<p>¿Qué formas existen para iterar un enumerador cuyos valores no tienen saltos?</p>
+<h1>1. Solución rápida</h1>
+<p>La solución más rápida y problemática es iterar directamente sobre los valores iniciales y finales.
+Algo parecido al código anterior pero añadiendo las conversiones:</p>
+<div class="highlight"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="n">MyEnumeration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="w"> </span><span class="p">};</span>
+
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="nb nb-Type">int</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">static_cast</span><span class="o">&lt;</span><span class="nb nb-Type">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MyEnumeration</span><span class="p">::</span><span class="n">A</span><span class="p">);</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="n">static_cast</span><span class="o">&lt;</span><span class="nb nb-Type">int</span><span class="o">&gt;</span><span class="p">(</span><span class="n">MyEnumeration</span><span class="p">::</span><span class="n">E</span><span class="p">);</span><span class="w"> </span><span class="o">++</span><span class="n">i</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>Este código, aunque correcto, tiene varios problemas:</p>
+<ul>
+<li>Es una línea muy larga, difícil de comprobar de un simple vistazo.</li>
+<li>Si se cambia la enumeración, hay que cambiar todos los <code>for</code>.</li>
+</ul>
+<h1>2. Añadir la información de la iteración dentro del propio enumerador</h1>
+<p>Una mejor aproximación es añadir el comienzo y el final de los valores dentro del enumerador:</p>
+<div class="highlight"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="n">MyEnumeration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">,</span><span class="w"> </span><span class="n">BEGIN</span><span class="o">=</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">END</span><span class="o">=</span><span class="n">E</span><span class="p">};</span>
+</code></pre></div>
+
+<p>De esta forma, el código para iterar quedaría:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">for</span><span class="o">(</span><span class="nt">int</span><span class="w"> </span><span class="nt">i</span><span class="o">=</span><span class="nt">static_cast</span><span class="o">&lt;</span><span class="nt">int</span><span class="o">&gt;(</span><span class="nt">MyEnumeration</span><span class="p">::</span><span class="nd">BEGIN</span><span class="o">);</span><span class="nt">i</span><span class="o">&lt;=</span><span class="nt">static_cast</span><span class="o">&lt;</span><span class="nt">int</span><span class="o">&gt;(</span><span class="nt">MyEnumeration</span><span class="p">::</span><span class="nd">END</span><span class="o">);++</span><span class="nt">i</span><span class="o">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="err">//</span><span class="w"> </span><span class="err">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>La línea sigue siendo muy larga, pero la información sobre el comienzo y el final están incluidas dentro de la propia definición
+(aunque no el tipo de dato interno de la enumeración).
+De esta forma, si se modifican los valores del enum, es fácil ver que también hay que modificar el comienzo y el final.</p>
+<h1>3. Crear una clase para iterar</h1>
+<p>Una solución algo más complicada (pero mejor a medio plazo) consiste en crear una clase para iterar enumeradores.
+El objetivo es incluir esta clase en una cabecera para poder reusarla y añadir la forma del iterador junto a la declaración.</p>
+<div class="highlight"><pre><span></span><code><span class="k">enum</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="n">MyEnumeration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="nb nb-Type">int</span><span class="w"> </span><span class="p">{</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">B</span><span class="p">,</span><span class="w"> </span><span class="n">C</span><span class="p">,</span><span class="w"> </span><span class="n">D</span><span class="p">,</span><span class="w"> </span><span class="n">E</span><span class="p">};</span>
+<span class="n">using</span><span class="w"> </span><span class="n">MyEnumerationIterator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EnumClassIterator</span><span class="o">&lt;</span><span class="n">MyEnumeration</span><span class="p">,</span><span class="w"> </span><span class="n">MyEnumeration</span><span class="p">::</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="n">MyEnumeration</span><span class="p">::</span><span class="n">E</span><span class="o">&gt;</span><span class="p">;</span>
+</code></pre></div>
+
+<p>De esta forma, si modificamos la enumeración, tenemos justo al lado la forma en la que se itera.</p>
+<p>Posteriormente, podemos recorrer los valores de la enumeración mediante:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">auto</span><span class="w"> </span><span class="n">my_enum_value</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">MyEnumerationIterator</span><span class="p">{})</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="o">//</span><span class="w"> </span><span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div>
+
+<p>La pregunta es... ¿cómo hacemos una clase genérica para iterar los valores?</p>
+<p>Lo primero es pensar que deberíamos hacer una clase para generar la iteración y otra para los iteradores.
+Sin embargo, por simplicidad, es preferible crear una única clase que haga ambas funciones aunque eso 
+viole el <a href="https://es.wikipedia.org/wiki/Principio_de_responsabilidad_%C3%BAnica">SRP</a>.</p>
+<p>La parte que genera la iteración debe cumplir:</p>
+<ul>
+<li>Tiene que estar templatizada.</li>
+<li>Tiene que tener el método begin() que devuelve un iterator al comienzo de la enumeración.</li>
+<li>Tiene que tener el método end() que devuelve un iterator pasado el último elemento de la enumeración.</li>
+</ul>
+<p>La parte del iterador tiene que cumplir:</p>
+<ul>
+<li>Tener un operador de dereferencia (*).</li>
+<li>Tener un operador de <em>no igualdad</em> (!=)</li>
+<li>Tener un operador de incremento (++)</li>
+</ul>
+<p>En nuestro caso, cada iterador almacena un entero con el valor al que apunta, 
+por lo que todas las comparaciones, incrementos y referencias se realizan con ese entero.
+Como la enumeración puede basarse en diversos tipos de valores, añadiremos la siguiente comprobación:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">static_assert</span><span class="p">(</span><span class="nx">std</span><span class="o">::</span><span class="nx">is_integral</span><span class="p">&lt;</span><span class="nx">value_type</span><span class="p">&gt;</span><span class="o">::</span><span class="nx">value</span><span class="p">);</span>
+</code></pre></div>
+
+<p>El iterador final será el siguiente al último valor a de la enumeración. 
+Para evitar que eso dé problemas, añadiremos otra comprobación:</p>
+<div class="highlight"><pre><span></span><code><span class="nx">static_assert</span><span class="p">(</span><span class="nx">static_cast</span><span class="p">&lt;</span><span class="nx">value_type</span><span class="p">&gt;(</span><span class="nx">end_val</span><span class="p">)</span><span class="w"> </span><span class="p">&lt;</span><span class="w"> </span><span class="nx">std</span><span class="o">::</span><span class="nx">numeric_limits</span><span class="p">&lt;</span><span class="nx">value_type</span><span class="p">&gt;</span><span class="o">::</span><span class="nx">max</span><span class="p">());</span>
+</code></pre></div>
+
+<p>Si tomamos todo en consideración, la clase quedaría:</p>
+<div class="highlight"><pre><span></span><code><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;type_traits&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;limits&gt;</span>
+
+<span class="n">template</span><span class="w"> </span><span class="o">&lt;</span><span class="n">typename</span><span class="w"> </span><span class="nc">TYPE</span><span class="p">,</span><span class="w"> </span><span class="n">TYPE</span><span class="w"> </span><span class="n">begin_val</span><span class="p">,</span><span class="w"> </span><span class="n">TYPE</span><span class="w"> </span><span class="n">end_val</span><span class="o">&gt;</span>
+<span class="kr">class</span><span class="w"> </span><span class="nc">EnumClassIterator</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kr">typedef</span><span class="w"> </span><span class="n">typename</span><span class="w"> </span><span class="nc">std</span><span class="o">::</span><span class="n">underlying_type</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="o">&gt;::</span><span class="n">type</span><span class="w"> </span><span class="n">value_type</span><span class="p">;</span>
+<span class="w">  </span><span class="n">static_assert</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">is_integral</span><span class="o">&lt;</span><span class="n">value_type</span><span class="o">&gt;::</span><span class="n">value</span><span class="p">);</span>
+<span class="w">  </span><span class="n">static_assert</span><span class="p">(</span><span class="kr">static_cast</span><span class="o">&lt;</span><span class="n">value_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">end_val</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">numeric_limits</span><span class="o">&lt;</span><span class="n">value_type</span><span class="o">&gt;::</span><span class="nf">max</span><span class="p">());</span>
+
+<span class="w"> </span><span class="kr">public</span><span class="o">:</span>
+<span class="w">  </span><span class="n">EnumClassIterator</span><span class="p">(</span><span class="kr">const</span><span class="w"> </span><span class="n">TYPE</span><span class="o">&amp;</span><span class="w"> </span><span class="n">value</span><span class="p">)</span>
+<span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">m_value</span><span class="p">(</span><span class="kr">static_cast</span><span class="o">&lt;</span><span class="n">value_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">value</span><span class="p">))</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">  </span><span class="n">EnumClassIterator</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">m_value</span><span class="p">(</span><span class="kr">static_cast</span><span class="o">&lt;</span><span class="n">value_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">begin_val</span><span class="p">))</span><span class="w"> </span><span class="p">{}</span>
+<span class="w">  </span><span class="n">EnumClassIterator</span><span class="o">&amp;</span><span class="w"> </span><span class="kr">operator</span><span class="o">++</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="o">++</span><span class="n">m_value</span><span class="p">;</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">this</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="n">TYPE</span><span class="w"> </span><span class="kr">operator</span><span class="o">*</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="kr">static_cast</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="o">&gt;</span><span class="p">(</span><span class="n">m_value</span><span class="p">);</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="n">EnumClassIterator</span><span class="w"> </span><span class="nf">begin</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="n">begin_val</span><span class="p">};</span><span class="w"> </span><span class="p">}</span>
+<span class="w">  </span><span class="n">EnumClassIterator</span><span class="w"> </span><span class="nf">end</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">{</span><span class="kr">static_cast</span><span class="o">&lt;</span><span class="n">TYPE</span><span class="o">&gt;</span><span class="p">(</span><span class="kr">static_cast</span><span class="o">&lt;</span><span class="n">value_type</span><span class="o">&gt;</span><span class="p">(</span><span class="n">end_val</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">)};</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="kr">bool</span><span class="w"> </span><span class="kr">operator</span><span class="o">!=</span><span class="p">(</span><span class="kr">const</span><span class="w"> </span><span class="n">EnumClassIterator</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">m_value</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">m_value</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+
+<span class="w"> </span><span class="kr">private</span><span class="o">:</span>
+<span class="w">  </span><span class="n">value_type</span><span class="w"> </span><span class="n">m_value</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div>
+
+<p>Podemos ver un ejemplo de su uso en el proyecto <a href="https://github.com/jcallejap/PuzzleADaySolver/blob/main/Solver/EnumClassIterator.h">PuzzleADaySolver</a>:</p>
+<p>Nos podemos preguntar si ambas soluciones son similares o el hecho de haber añadido más complejidad al código lo hace menos eficiente.
+Para ello, es posible ver ambas soluciones en <a href="https://godbolt.org/z/c88Y4WG4r">Compiler Explorer</a> donde se observa que Visual Studio considera ambas funciones equivalentes.</p>
+<h1>4. Enlaces interesantes</h1>
+<p><a href="https://stackoverflow.com/q/69762598/218774">What are commonly-used ways to iterate over an enum class in C++?</a></p>
+<p><a href="https://stackoverflow.com/q/261963/218774">How can I iterate over an enum?</a></p>
+  </div>
+  <div class="tag-cloud">
+    <p>
+      <a href="/tag/c.html">C++</a>
+    </p>
+  </div>
+
+
+
+
+
+
+</article>
+
+<footer>
+<p>
+  &copy; 2024  - This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/deed.en_US" target="_blank">Creative Commons Attribution-ShareAlike</a>
+</p>
+<p>
+Built with <a href="http://getpelican.com" target="_blank">Pelican</a> using <a href="http://bit.ly/flex-pelican" target="_blank">Flex</a> theme
+</p><p>
+  <a rel="license"
+     href="http://creativecommons.org/licenses/by-sa/4.0/"
+     target="_blank">
+    <img alt="Creative Commons License"
+         title="Creative Commons License"
+         style="border-width:0"
+           src="/theme/img/cc/by-sa.png"
+         width="80"
+         height="15"/>
+  </a>
+</p></footer>  </main>
+
+<script type="application/ld+json">
+{
+  "@context" : "http://schema.org",
+  "@type" : "Blog",
+  "name": " Programando en tiempo real ",
+  "url" : "",
+  "image": "/images/profile.png",
+  "description": "Ejemplos de algoritmos, curiosidades, y cosas que voy descubriendo mientras desarrollo aplicaciones."
+}
+</script>
+</body>
+</html>
