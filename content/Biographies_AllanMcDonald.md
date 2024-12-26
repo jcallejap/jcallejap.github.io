@@ -41,7 +41,10 @@ Jamás se arrepintió de haber hecho lo correcto.
 
 # Referencias
 
-https://www.npr.org/2021/03/07/974534021/remembering-allan-mcdonald-he-refused-to-approve-challenger-launch-exposed-cover
-https://en.wikipedia.org/wiki/Allan_J._McDonald
-https://en.wikipedia.org/wiki/Space_Shuttle_Challenger_disaster
-https://en.wikipedia.org/wiki/Rogers_Commission_Report
+[Remembering Allan McDonald: He Refused To Approve Challenger Launch, Exposed Cover-Up](https://www.npr.org/2021/03/07/974534021/remembering-allan-mcdonald-he-refused-to-approve-challenger-launch-exposed-cover)
+
+[Wikipedia: Allan J. McDonald](https://en.wikipedia.org/wiki/Allan_J._McDonald)
+
+[Wikipedia: Space Shuttle Challenger disaster](https://en.wikipedia.org/wiki/Space_Shuttle_Challenger_disaster)
+
+[Wikipedia: Rogers Commission Report](https://en.wikipedia.org/wiki/Rogers_Commission_Report)
